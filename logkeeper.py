@@ -61,15 +61,7 @@ def home():
         return redirect(url_for('admin_panel'))
     return redirect(url_for('user_panel'))
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if validate_login({'username': username, 'password': password}):
-            return redirect(url_for('home'))
-        return 'Invalid credentials', 401
-    return render_template('login.html')
+
 # Маршрут для админ-панели
 @app.route('/admin')
 @login_required(username='admin')
