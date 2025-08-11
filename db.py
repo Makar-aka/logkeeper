@@ -70,6 +70,15 @@ def update_setting(key, value):
     conn.commit()
     conn.close()
 
+def validate_user_by_id(user_id):
+    """Проверка пользователя в базе данных logkeeper по ID."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, username, role FROM users WHERE id = ?', (user_id,))
+    user = cursor.fetchone()
+    conn.close()
+    return user
+
 def validate_user(username, password):
     """Проверка пользователя в базе данных logkeeper."""
     conn = sqlite3.connect(LOGKEEPER_DB_NAME)
