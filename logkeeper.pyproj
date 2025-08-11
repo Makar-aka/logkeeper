@@ -32,6 +32,7 @@
     <Content Include="templates\admin.html" />
     <Content Include="templates\change_password.html" />
     <Content Include="templates\login.html" />
+    <Content Include="templates\navigation.html" />
     <Content Include="templates\settings.html" />
     <Content Include="templates\user.html" />
   </ItemGroup>
