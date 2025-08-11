@@ -1,15 +1,10 @@
 from flask import Flask, request, jsonify, redirect, url_for, render_template
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_simplelogin import SimpleLogin, login_required
 import sqlite3
 
 # Настройка Flask
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-
-# Настройка Flask-Login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 # Настройка базы данных SQLite
 DB_NAME = "logs.db"
@@ -36,61 +31,30 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Flask-Login User class
-class User(UserMixin):
-    def __init__(self, id, username, role):
-        self.id = id
-        self.username = username
-        self.role = role
-
-@login_manager.user_loader
-def load_user(user_id):
+# Функция проверки пользователя
+def validate_login(user):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('SELECT id, username, role FROM users WHERE id = ?', (user_id,))
-    user = cursor.fetchone()
+    cursor.execute('SELECT username, password, role FROM users WHERE username = ? AND password = ?', (user['username'], user['password']))
+    db_user = cursor.fetchone()
     conn.close()
-    if user:
-        return User(id=user[0], username=user[1], role=user[2])
-    return None
+    if db_user:
+        return True
+    return False
 
-# Маршрут для входа
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-        cursor.execute('SELECT id, username, role FROM users WHERE username = ? AND password = ?', (username, password))
-        user = cursor.fetchone()
-        conn.close()
-        if user:
-            login_user(User(id=user[0], username=user[1], role=user[2]))
-            return redirect(url_for('view_logs'))
-        return 'Invalid credentials', 401
-    return render_template('login.html')
+# Инициализация Flask-SimpleLogin
+SimpleLogin(app, login_checker=validate_login)
 
-# Маршрут для выхода
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-# Пример маршрута с ограничением по роли
+# Маршрут для админ-панели
 @app.route('/admin')
-@login_required
+@login_required(username='admin')
 def admin_panel():
-    if current_user.role != 'admin':
-        return 'Access denied', 403
-    return 'Welcome to the admin panel'
+    return render_template('admin.html')
 
+# Маршрут для пользовательской панели
 @app.route('/user')
-@login_required
+@login_required(username='user')
 def user_panel():
-    if current_user.role != 'user':
-        return 'Access denied', 403
     return render_template('user.html')
 
 # Веб-интерфейс для просмотра логов
