@@ -250,26 +250,8 @@ footer {
         background-color: #f1f1f1;
     }
 
-    .logs-table .time-column {
-        width: 16ch; /* Ширина для времени */
-        text-align: center;
-    }
-
-    .logs-table .ip-column {
-        width: 16ch; /* Ширина для IP */
-        text-align: center;
-    }
-
     .logs-table .message-column {
-        width: auto; /* Сообщение занимает оставшееся пространство */
-        word-wrap: break-word;
-    }
-    .logs-table .device-column {
-        width: 20ch; /* Ширина для устройства */
-        text-align: center;
-    }
-
-    .logs-table .process-column {
-        width: 20ch; /* Ширина для процесса */
-        text-align: center;
+        width: 100%; /* Сообщение занимает всю ширину */
+        word-wrap: break-word; /* Перенос длинных строк */
+        white-space: pre-wrap; /* Сохраняет форматирование текста */
     }

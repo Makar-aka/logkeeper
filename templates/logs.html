@@ -13,22 +13,13 @@
         <table class="logs-table">
             <thead>
                 <tr>
-                    <th class="time-column">Время</th>
-                    <th class="ip-column">IP-адрес</th>
-                    <th class="device-column">Устройство</th>
-                    <th class="process-column">Процесс</th>
                     <th class="message-column">Сообщение</th>
                 </tr>
             </thead>
             <tbody>
                 {% for log in logs %}
                 <tr>
-                    <td>{{ log[1] }}</td> <!-- Время -->
-                    <td>{{ log[2] }}</td> <!-- IP -->
-                    {% set parts = log[3].split(' ', 3) %}
-                    <td>{{ parts[1] if parts|length > 1 else 'N/A' }}</td> <!-- Устройство -->
-                    <td>{{ parts[2].split(':')[0] if parts|length > 2 else 'N/A' }}</td> <!-- Процесс -->
-                    <td>{{ parts[3] if parts|length > 3 else log[3] }}</td> <!-- Сообщение -->
+                    <td>{{ log[3] }}</td> <!-- Полное сообщение -->
                 </tr>
                 {% endfor %}
             </tbody>
