@@ -41,7 +41,8 @@ def init_db():
     default_settings = [
         ('log_retention_days', '30'),
         ('max_db_size_mb', '100'),
-        ('allow_new_routers', 'true')
+        ('allow_new_routers', 'true'),
+        ('log_server_port', '1514')  # Добавляем настройку порта
     ]
     for key, value in default_settings:
         cursor_keeper.execute('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', (key, value))

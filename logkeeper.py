@@ -103,15 +103,25 @@ def settings():
         return 'Access denied', 403
 
     if request.method == 'POST':
+        old_port = int(db.get_settings().get('log_server_port', 1514))
         for key, value in request.form.items():
             db.update_setting(key, value)
+
+        # Проверяем, изменился ли порт
+        new_port = int(db.get_settings().get('log_server_port', 1514))
+        if old_port != new_port:
+            print(f"Port changed from {old_port} to {new_port}. Restarting log server...")
+            start_log_server()  # Перезапускаем сервер логов
 
     settings = db.get_settings()
     return render_template('settings.html', settings=settings)
 
 # Функция для приема логов
-def start_log_server(host='0.0.0.0', port=514):
+def start_log_server(host='0.0.0.0'):
     """Запуск сервера для приема логов."""
+    # Получаем порт из настроек
+    port = int(db.get_settings().get('log_server_port', 1514))  # Значение по умолчанию — 1514
+
     def handle_logs():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind((host, port))
