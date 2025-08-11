@@ -264,3 +264,12 @@ footer {
         width: auto; /* Сообщение занимает оставшееся пространство */
         word-wrap: break-word;
     }
+    .logs-table .device-column {
+        width: 20ch; /* Ширина для устройства */
+        text-align: center;
+    }
+
+    .logs-table .process-column {
+        width: 20ch; /* Ширина для процесса */
+        text-align: center;
+    }
