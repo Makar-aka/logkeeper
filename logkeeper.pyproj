@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="db.py" />
     <Compile Include="logkeeper.py" />
   </ItemGroup>
   <ItemGroup>
@@ -31,6 +32,7 @@
     <Content Include="templates\admin.html" />
     <Content Include="templates\change_password.html" />
     <Content Include="templates\login.html" />
+    <Content Include="templates\settings.html" />
     <Content Include="templates\user.html" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
