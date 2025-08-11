@@ -3,6 +3,13 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 import db  # Импортируем модуль db
 import socket
 import threading
+import logging
+
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,  # Уровень логирования (INFO, DEBUG, ERROR и т.д.)
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 # Настройка Flask
 app = Flask(__name__)
@@ -117,23 +124,24 @@ def settings():
     return render_template('settings.html', settings=settings)
 
 # Функция для приема логов
-def start_log_server(host='0.0.0.0'):
+def start_log_server(host='0.0.0.0', port=1514):  # Используем порт 1514 по умолчанию
     """Запуск сервера для приема логов."""
-    # Получаем порт из настроек
-    port = int(db.get_settings().get('log_server_port', 1514))  # Значение по умолчанию — 1514
-
     def handle_logs():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind((host, port))
-        print(f"Log server started on {host}:{port}")
+        logging.info(f"Log server started on {host}:{port}")
         while True:
-            data, addr = sock.recvfrom(1024)
-            message = data.decode('utf-8')
-            print(f"Received log from {addr}: {message}")
-            db.insert_log(addr[0], message)
+            try:
+                data, addr = sock.recvfrom(1024)
+                message = data.decode('utf-8')
+                logging.info(f"Received log from {addr[0]}: {message}")
+                db.insert_log(addr[0], message)
+            except Exception as e:
+                logging.error(f"Error while processing log: {e}")
 
     thread = threading.Thread(target=handle_logs, daemon=True)
     thread.start()
+
 # Запуск сервера логов при старте приложения
 if __name__ == '__main__':
     db.init_db()
