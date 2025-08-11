@@ -25,10 +25,12 @@
     <Compile Include="logkeeper.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="static\" />
     <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
+    <Content Include="static\styles.css" />
     <Content Include="templates\admin.html" />
     <Content Include="templates\change_password.html" />
     <Content Include="templates\login.html" />
