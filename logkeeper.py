@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, redirect, url_for, render_template
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import db  # Импортируем модуль db
+import socket
+import threading
 
 # Настройка Flask
 app = Flask(__name__)
@@ -74,7 +76,7 @@ def user_panel():
 @login_required
 def view_logs():
     logs = db.get_logs()
-    return jsonify(logs)
+    return render_template('logs.html', logs=logs)
 
 # Маршрут для изменения пароля
 @app.route('/change_password', methods=['GET', 'POST'])
@@ -107,7 +109,23 @@ def settings():
     settings = db.get_settings()
     return render_template('settings.html', settings=settings)
 
-# Инициализация баз данных
+# Функция для приема логов
+def start_log_server(host='0.0.0.0', port=514):
+    """Запуск сервера для приема логов."""
+    def handle_logs():
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind((host, port))
+        print(f"Log server started on {host}:{port}")
+        while True:
+            data, addr = sock.recvfrom(1024)
+            message = data.decode('utf-8')
+            print(f"Received log from {addr}: {message}")
+            db.insert_log(addr[0], message)
+
+    thread = threading.Thread(target=handle_logs, daemon=True)
+    thread.start()
+# Запуск сервера логов при старте приложения
 if __name__ == '__main__':
     db.init_db()
-    app.run(host='0.0.0.0', port=5000)
+    start_log_server()
+    app.run(host='0.0.0.0', port=5000))

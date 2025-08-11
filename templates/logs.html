@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Логи</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'navigation.html' %}
+    <div class="container">
+        <h1>Логи</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>IP-адрес</th>
+                    <th>Сообщение</th>
+                    <th>Время</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log[1] }}</td>
+                    <td>{{ log[2] }}</td>
+                    <td>{{ log[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        © <a href="https://github.com/Makar-aka" target="_blank">MakarSPB</a>
+    </footer>
+</body>
+</html>
