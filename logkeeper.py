@@ -2,16 +2,16 @@ from flask import Flask, request, jsonify, redirect, url_for, render_template
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import sqlite3
 
-# Настройка Flask
+# РќР°СЃС‚СЂРѕР№РєР° Flask
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# Настройка Flask-Login
+# РќР°СЃС‚СЂРѕР№РєР° Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# Настройка базы данных SQLite
+# РќР°СЃС‚СЂРѕР№РєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С… SQLite
 DB_NAME = "logs.db"
 
 def init_db():
@@ -54,7 +54,7 @@ def load_user(user_id):
         return User(id=user[0], username=user[1], role=user[2])
     return None
 
-# Маршрут для входа
+# РњР°СЂС€СЂСѓС‚ РґР»СЏ РІС…РѕРґР°
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -71,14 +71,14 @@ def login():
         return 'Invalid credentials', 401
     return render_template('login.html')
 
-# Маршрут для выхода
+# РњР°СЂС€СЂСѓС‚ РґР»СЏ РІС‹С…РѕРґР°
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
-# Пример маршрута с ограничением по роли
+# РџСЂРёРјРµСЂ РјР°СЂС€СЂСѓС‚Р° СЃ РѕРіСЂР°РЅРёС‡РµРЅРёРµРј РїРѕ СЂРѕР»Рё
 @app.route('/admin')
 @login_required
 def admin_panel():
@@ -93,7 +93,7 @@ def user_panel():
         return 'Access denied', 403
     return render_template('user.html')
 
-# Веб-интерфейс для просмотра логов
+# Р’РµР±-РёРЅС‚РµСЂС„РµР№СЃ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° Р»РѕРіРѕРІ
 @app.route('/logs', methods=['GET'])
 @login_required
 def view_logs():
@@ -105,7 +105,7 @@ def view_logs():
 
     return jsonify(logs)
 
-# Инициализация базы данных
+# РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р±Р°Р·С‹ РґР°РЅРЅС‹С…
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5000)
