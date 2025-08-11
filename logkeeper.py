@@ -128,19 +128,24 @@ def start_log_server(host='0.0.0.0', port=1514):  # Используем пор�
     """Запуск сервера для приема логов."""
     def handle_logs():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind((host, port))
-        logging.info(f"Log server started on {host}:{port}")
+        sock.bind(('0.0.0.0', 1514))
+        logging.info("Log server started on port 1514")
         while True:
             try:
                 data, addr = sock.recvfrom(1024)
                 message = data.decode('utf-8')
                 logging.info(f"Received log from {addr[0]}: {message}")
-                db.insert_log(addr[0], message)
+            
+                # Парсим сообщение
+                timestamp, device, log_message = parse_log_message(message)
+            
+                # Формируем сообщение для записи
+                full_message = f"[{timestamp}] {device}: {log_message}" if timestamp and device else message
+            
+                # Записываем в базу данных
+                db.insert_log(addr[0], full_message)
             except Exception as e:
                 logging.error(f"Error while processing log: {e}")
-
-    thread = threading.Thread(target=handle_logs, daemon=True)
-    thread.start()
 
 # Запуск сервера логов при старте приложения
 if __name__ == '__main__':
