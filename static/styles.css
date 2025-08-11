@@ -58,27 +58,27 @@ footer {
     text-align: center;
 }
 
-    .container h1 {
-        margin-bottom: 20px;
-        font-size: 24px;
-    }
+.container h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
 
-    .container input,
-    .container button {
-        width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
+.container input,
+.container button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
-    .container button {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-    }
+.container button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
 
-        .container button:hover {
-            background-color: #0056b3;
-        }
+.container button:hover {
+    background-color: #0056b3;
+}
