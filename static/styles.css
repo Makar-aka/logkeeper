@@ -250,8 +250,13 @@ footer {
         background-color: #f1f1f1;
     }
 
+    .logs-table .sender-ip-column {
+        width: 16ch; /* Ширина для IP отправителя */
+        text-align: center;
+    }
+
     .logs-table .message-column {
-        width: 100%; /* Сообщение занимает всю ширину */
+        width: auto; /* Сообщение занимает оставшееся пространство */
         word-wrap: break-word; /* Перенос длинных строк */
         white-space: pre-wrap; /* Сохраняет форматирование текста */
     }
