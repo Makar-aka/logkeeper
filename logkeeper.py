@@ -12,6 +12,7 @@ DB_NAME = "logs.db"
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
+    # Создание таблицы логов
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,6 +21,7 @@ def init_db():
             message TEXT
         )
     ''')
+    # Создание таблицы пользователей
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,6 +30,12 @@ def init_db():
             role TEXT CHECK(role IN ('admin', 'user')) NOT NULL
         )
     ''')
+    # Проверка, существует ли администратор
+    cursor.execute('SELECT * FROM users WHERE username = "admin"')
+    admin_exists = cursor.fetchone()
+    if not admin_exists:
+        # Добавление администратора с паролем по умолчанию
+        cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', ('admin', 'admin1', 'admin'))
     conn.commit()
     conn.close()
 
@@ -68,6 +76,26 @@ def view_logs():
     conn.close()
 
     return jsonify(logs)
+
+
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required(username='admin')
+def change_password():
+    if request.method == 'POST':
+        new_password = request.form['new_password']
+        if not new_password:
+            return 'Password cannot be empty', 400
+
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET password = ? WHERE username = ?', (new_password, 'admin'))
+        conn.commit()
+        conn.close()
+
+        return 'Password updated successfully', 200
+
+    return render_template('change_password.html')
+
 
 # Инициализация базы данных
 if __name__ == '__main__':
