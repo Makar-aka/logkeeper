@@ -1,4 +1,27 @@
 /* Общие стили для всех страниц */
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #007bff;
+    padding: 10px 0;
+    text-align: center;
+    z-index: 1000;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
@@ -9,6 +32,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding-top: 50px;
 }
 
 /* Стили для футера */
