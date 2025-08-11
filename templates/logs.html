@@ -26,9 +26,9 @@
                     <td>{{ log[3] }}</td> <!-- Время -->
                     <td>{{ log[1] }}</td> <!-- IP -->
                     {% set parts = log[2].split(' ', 3) %}
-                    <td>{{ parts[1] }}</td> <!-- Устройство -->
-                    <td>{{ parts[2].split(':')[0] }}</td> <!-- Процесс -->
-                    <td>{{ parts[3] }}</td> <!-- Сообщение -->
+                    <td>{{ parts[1] if parts|length > 1 else 'N/A' }}</td> <!-- Устройство -->
+                    <td>{{ parts[2].split(':')[0] if parts|length > 2 else 'N/A' }}</td> <!-- Процесс -->
+                    <td>{{ parts[3] if parts|length > 3 else log[2] }}</td> <!-- Сообщение -->
                 </tr>
                 {% endfor %}
             </tbody>
