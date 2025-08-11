@@ -3,10 +3,10 @@ import sqlite3
 DB_NAME = "logs.db"
 
 def init_db():
-    """Инициализация базы данных."""
+    """РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р±Р°Р·С‹ РґР°РЅРЅС‹С…."""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    # Создание таблицы логов
+    # РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ Р»РѕРіРѕРІ
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,7 +15,7 @@ def init_db():
             message TEXT
         )
     ''')
-    # Создание таблицы пользователей
+    # РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +24,7 @@ def init_db():
             role TEXT CHECK(role IN ('admin', 'user')) NOT NULL
         )
     ''')
-    # Создание таблицы настроек
+    # РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ РЅР°СЃС‚СЂРѕРµРє
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS settings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +32,7 @@ def init_db():
             value TEXT NOT NULL
         )
     ''')
-    # Добавление настроек по умолчанию
+    # Р”РѕР±Р°РІР»РµРЅРёРµ РЅР°СЃС‚СЂРѕРµРє РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
     default_settings = [
         ('log_retention_days', '30'),
         ('max_db_size_mb', '100'),
@@ -40,7 +40,7 @@ def init_db():
     ]
     for key, value in default_settings:
         cursor.execute('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', (key, value))
-    # Добавление администратора по умолчанию
+    # Р”РѕР±Р°РІР»РµРЅРёРµ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
     cursor.execute('SELECT * FROM users WHERE username = "admin"')
     admin_exists = cursor.fetchone()
     if not admin_exists:
@@ -49,7 +49,7 @@ def init_db():
     conn.close()
 
 def get_settings():
-    """Получение всех настроек из базы данных."""
+    """РџРѕР»СѓС‡РµРЅРёРµ РІСЃРµС… РЅР°СЃС‚СЂРѕРµРє РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С…."""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT key, value FROM settings')
@@ -58,7 +58,7 @@ def get_settings():
     return settings
 
 def update_setting(key, value):
-    """Обновление настройки в базе данных."""
+    """РћР±РЅРѕРІР»РµРЅРёРµ РЅР°СЃС‚СЂРѕР№РєРё РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С…."""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('UPDATE settings SET value = ? WHERE key = ?', (value, key))
