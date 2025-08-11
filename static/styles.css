@@ -11,16 +11,16 @@ nav {
     z-index: 1000;
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 16px;
-}
+    nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 15px;
+        font-size: 16px;
+    }
 
-nav a:hover {
-    text-decoration: underline;
-}
+        nav a:hover {
+            text-decoration: underline;
+        }
 
 body {
     font-family: Arial, sans-serif;
@@ -58,27 +58,166 @@ footer {
     text-align: center;
 }
 
-.container h1 {
-    margin-bottom: 20px;
-    font-size: 24px;
+    .container h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    .container input,
+    .container button {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .container button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+        .container button:hover {
+            background-color: #0056b3;
+        }
+
+/* Стили для settings-container */
+.settings-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: left;
 }
 
-.container input,
-.container button {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    .settings-container h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .settings-container label {
+        display: block;
+        margin: 10px 0 5px;
+        font-weight: bold;
+    }
+
+    .settings-container input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .settings-container button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .settings-container button:hover {
+            background-color: #0056b3;
+        }
+
+/* Стили для admin-container */
+.admin-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
 }
 
-.container button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+    .admin-container h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    .admin-container a {
+        display: inline-block;
+        margin: 10px 0;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+        .admin-container a:hover {
+            background-color: #0056b3;
+        }
+
+/* Стили для user-container */
+.user-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
 }
 
-.container button:hover {
-    background-color: #0056b3;
+    .user-container h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    .user-container a {
+        display: inline-block;
+        margin: 10px 0;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+        .user-container a:hover {
+            background-color: #0056b3;
+        }
+
+/* Стили для change-password-container */
+.change-password-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
 }
+
+    .change-password-container h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    .change-password-container input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .change-password-container button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .change-password-container button:hover {
+            background-color: #0056b3;
+        }
