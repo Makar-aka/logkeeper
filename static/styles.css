@@ -221,3 +221,46 @@ footer {
         .change-password-container button:hover {
             background-color: #0056b3;
         }
+/* Стили для таблицы логов */
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: left;
+}
+
+    .logs-table th,
+    .logs-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .logs-table th {
+        background-color: #007bff;
+        color: white;
+        text-align: center;
+    }
+
+    .logs-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .logs-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .logs-table .time-column {
+        width: 16ch; /* Ширина для времени */
+        text-align: center;
+    }
+
+    .logs-table .ip-column {
+        width: 16ch; /* Ширина для IP */
+        text-align: center;
+    }
+
+    .logs-table .message-column {
+        width: auto; /* Сообщение занимает оставшееся пространство */
+        word-wrap: break-word;
+    }

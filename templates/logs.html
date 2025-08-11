@@ -10,20 +10,20 @@
     {% include 'navigation.html' %}
     <div class="container">
         <h1>Логи</h1>
-        <table>
+        <table class="logs-table">
             <thead>
                 <tr>
-                    <th>IP-адрес</th>
-                    <th>Сообщение</th>
-                    <th>Время</th>
+                    <th class="time-column">Время</th>
+                    <th class="ip-column">IP-адрес</th>
+                    <th class="message-column">Сообщение</th>
                 </tr>
             </thead>
             <tbody>
                 {% for log in logs %}
                 <tr>
-                    <td>{{ log[1] }}</td>
-                    <td>{{ log[2] }}</td>
-                    <td>{{ log[3] }}</td>
+                    <td>{{ log[3] }}</td> <!-- Время -->
+                    <td>{{ log[1] }}</td> <!-- IP -->
+                    <td>{{ log[2] }}</td> <!-- Сообщение -->
                 </tr>
                 {% endfor %}
             </tbody>
