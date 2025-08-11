@@ -104,3 +104,11 @@ def get_logs():
     logs = cursor.fetchall()
     conn.close()
     return logs
+
+def update_user_password(username, new_password):
+    """Обновление пароля пользователя в базе данных logkeeper."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('UPDATE users SET password = ? WHERE username = ?', (new_password, username))
+    conn.commit()
+    conn.close()
