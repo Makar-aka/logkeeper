@@ -53,6 +53,17 @@ def validate_login(user):
 # Инициализация Flask-SimpleLogin
 SimpleLogin(app, login_checker=validate_login)
 
+@app.route('/')
+@login_required
+def home():
+    # Перенаправление в зависимости от роли пользователя
+    if current_user.get('role') == 'admin':
+        return redirect(url_for('admin_panel'))
+    return redirect(url_for('user_panel'))
+
+# Настройка SimpleLogin с указанием маршрута по умолчанию
+SimpleLogin(app, login_checker=validate_login, home_url='/')
+
 # Маршрут для админ-панели
 @app.route('/admin')
 @login_required(username='admin')
