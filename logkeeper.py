@@ -123,24 +123,43 @@ def settings():
     settings = db.get_settings()
     return render_template('settings.html', settings=settings)
 
+def parse_log_message(message):
+    """Парсинг сообщения для извлечения полезных данных."""
+    try:
+        # Пример строки: <14>Aug 12 00:01:52 Keenetic-9463 ndm: Сообщение
+        parts = message.split(' ', 4)  # Разделяем строку на 5 частей
+        priority = parts[0]  # <14>
+        timestamp = parts[1] + ' ' + parts[2]  # Aug 12 00:01:52
+        device = parts[3]  # Keenetic-9463
+        log_message = parts[4]  # Остальная часть сообщения
+        return timestamp, device, log_message
+    except IndexError:
+        # Если формат не соответствует ожиданиям, возвращаем оригинальное сообщение
+        return None, None, message
+
 # Функция для приема логов
 def start_log_server(host='0.0.0.0', port=1514):  # Используем порт 1514 по умолчанию
     """Запуск сервера для приема логов."""
     def handle_logs():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind((host, port))
-        logging.info(f"Log server started on {host}:{port}")
+        sock.bind(('0.0.0.0', 1514))
+        logging.info("Log server started on port 1514")
         while True:
             try:
                 data, addr = sock.recvfrom(1024)
                 message = data.decode('utf-8')
                 logging.info(f"Received log from {addr[0]}: {message}")
-                db.insert_log(addr[0], message)
+            
+                # Парсим сообщение
+                timestamp, device, log_message = parse_log_message(message)
+            
+                # Формируем сообщение для записи
+                full_message = f"[{timestamp}] {device}: {log_message}" if timestamp and device else message
+            
+                # Записываем в базу данных
+                db.insert_log(addr[0], full_message)
             except Exception as e:
                 logging.error(f"Error while processing log: {e}")
-
-    thread = threading.Thread(target=handle_logs, daemon=True)
-    thread.start()
 
 # Запуск сервера логов при старте приложения
 if __name__ == '__main__':
