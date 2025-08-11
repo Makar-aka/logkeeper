@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Настройки</title>
+    <title>РќР°СЃС‚СЂРѕР№РєРё</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,17 +58,17 @@
 </head>
 <body>
     <div class="settings-container">
-        <h1>Настройки</h1>
+        <h1>РќР°СЃС‚СЂРѕР№РєРё</h1>
         <form method="POST" action="/settings">
             {% for key, value in settings.items() %}
             <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}</label>
             <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
             {% endfor %}
-            <button type="submit">Сохранить настройки</button>
+            <button type="submit">РЎРѕС…СЂР°РЅРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё</button>
         </form>
     </div>
     <footer style="text-align: center; margin-top: 20px; font-size: 14px; color: #555;">
-        © <a href="https://github.com/Makar-aka" target="_blank" style="text-decoration: none; color: #007bff;">MakarSPB</a>
+        В© <a href="https://github.com/Makar-aka" target="_blank" style="text-decoration: none; color: #007bff;">MakarSPB</a>
     </footer>
 </body>
 </html>
