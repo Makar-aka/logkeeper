@@ -20,11 +20,7 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    conn = sqlite3.connect(db.DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute('SELECT id, username, role FROM users WHERE id = ?', (user_id,))
-    user = cursor.fetchone()
-    conn.close()
+    user = db.validate_user_by_id(user_id)
     if user:
         return User(id=user[0], username=user[1], role=user[2])
     return None
@@ -73,31 +69,11 @@ def user_panel():
         return 'Access denied', 403
     return render_template('user.html')
 
-@app.route('/settings', methods=['GET', 'POST'])
-@login_required
-def settings():
-    if current_user.role != 'admin':
-        return 'Access denied', 403
-
-    if request.method == 'POST':
-        # Обновление настроек
-        for key, value in request.form.items():
-            db.update_setting(key, value)
-
-    # Получение текущих настроек
-    settings = db.get_settings()
-    return render_template('settings.html', settings=settings)
-
 # Веб-интерфейс для просмотра логов
 @app.route('/logs', methods=['GET'])
 @login_required
 def view_logs():
-    conn = sqlite3.connect(db.DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM logs ORDER BY timestamp DESC')
-    logs = cursor.fetchall()
-    conn.close()
-
+    logs = db.get_logs()
     return jsonify(logs)
 
 # Маршрут для изменения пароля
@@ -112,17 +88,26 @@ def change_password():
         if not new_password:
             return 'Password cannot be empty', 400
 
-        conn = sqlite3.connect(db.DB_NAME)
-        cursor = conn.cursor()
-        cursor.execute('UPDATE users SET password = ? WHERE username = ?', (new_password, 'admin'))
-        conn.commit()
-        conn.close()
-
+        db.update_user_password('admin', new_password)
         return 'Password updated successfully', 200
 
     return render_template('change_password.html')
 
-# Инициализация базы данных
+# Маршрут для настроек
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    if current_user.role != 'admin':
+        return 'Access denied', 403
+
+    if request.method == 'POST':
+        for key, value in request.form.items():
+            db.update_setting(key, value)
+
+    settings = db.get_settings()
+    return render_template('settings.html', settings=settings)
+
+# Инициализация баз данных
 if __name__ == '__main__':
     db.init_db()
     app.run(host='0.0.0.0', port=5000)

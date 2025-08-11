@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
+    <title>Настройки</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,6 +11,7 @@
             margin: 0;
             padding: 20px;
         }
+
         .settings-container {
             max-width: 800px;
             margin: 0 auto;
@@ -19,46 +20,55 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .settings-container h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        .settings-container form {
-            display: flex;
-            flex-direction: column;
-        }
-        .settings-container label {
-            margin: 10px 0 5px;
-        }
-        .settings-container input {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .settings-container button {
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .settings-container button:hover {
-            background-color: #0056b3;
-        }
+
+            .settings-container h1 {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+
+            .settings-container form {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .settings-container label {
+                margin: 10px 0 5px;
+            }
+
+            .settings-container input {
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            .settings-container button {
+                padding: 10px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+                .settings-container button:hover {
+                    background-color: #0056b3;
+                }
     </style>
 </head>
 <body>
     <div class="settings-container">
-        <h1>Settings</h1>
+        <h1>Настройки</h1>
         <form method="POST" action="/settings">
             {% for key, value in settings.items() %}
-                <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}</label>
-                <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+            <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}</label>
+            <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
             {% endfor %}
-            <button type="submit">Save Settings</button>
+            <button type="submit">Сохранить настройки</button>
         </form>
     </div>
+    <footer style="text-align: center; margin-top: 20px; font-size: 14px; color: #555;">
+        © <a href="https://github.com/Makar-aka" target="_blank" style="text-decoration: none; color: #007bff;">MakarSPB</a>
+    </footer>
 </body>
 </html>
