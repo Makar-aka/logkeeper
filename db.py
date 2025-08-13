@@ -98,7 +98,7 @@ def extract_device_id(log_message):
     """Извлечение ID устройства из сообщения."""
     try:
         parts = log_message.split(' ')
-        return parts[2]  # ID устройства находится в третьей части сообщения
+        return parts[3]  # ID устройства находится в четвертой части сообщения
     except IndexError:
         return "Unknown"
 
