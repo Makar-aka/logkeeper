@@ -173,6 +173,52 @@ def change_password():
 
     return render_template('change_password.html')
 
+@app.route('/statistics', methods=['GET'])
+@login_required
+def view_statistics():
+    conn = sqlite3.connect(db.LOGS_DB_NAME)
+    cursor = conn.cursor()
+
+    # Размер базы данных
+    db_size = os.path.getsize(db.LOGS_DB_NAME) / (1024 * 1024)  # Размер в МБ
+
+    # Количество строк в таблице logs
+    cursor.execute('SELECT COUNT(*) FROM logs')
+    total_logs = cursor.fetchone()[0]
+
+    # Количество уникальных устройств
+    cursor.execute('SELECT COUNT(DISTINCT device_id) FROM logs')
+    unique_devices = cursor.fetchone()[0]
+
+    # Последний лог
+    cursor.execute('SELECT MAX(id), log FROM logs')
+    last_log = cursor.fetchone()
+
+    # Логи за последние 24 часа
+    cursor.execute('SELECT COUNT(*) FROM logs WHERE timestamp >= datetime("now", "-1 day")')
+    logs_last_24h = cursor.fetchone()[0]
+
+    # Самый активный IP
+    cursor.execute('SELECT ip, COUNT(*) as count FROM logs GROUP BY ip ORDER BY count DESC LIMIT 1')
+    most_active_ip = cursor.fetchone()
+
+    # Самое активное устройство
+    cursor.execute('SELECT device_id, COUNT(*) as count FROM logs GROUP BY device_id ORDER BY count DESC LIMIT 1')
+    most_active_device = cursor.fetchone()
+
+    conn.close()
+
+    return render_template(
+        'statistics.html',
+        db_size=db_size,
+        total_logs=total_logs,
+        unique_devices=unique_devices,
+        last_log=last_log,
+        logs_last_24h=logs_last_24h,
+        most_active_ip=most_active_ip,
+        most_active_device=most_active_device
+    )
+
 # Маршрут для настроек
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required

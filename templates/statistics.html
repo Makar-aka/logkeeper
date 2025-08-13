@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'navigation.html' %}
+    <div class="container">
+        <h1>Статистика системы логов</h1>
+        <table class="logs-table">
+            <tbody>
+                <tr>
+                    <th>Размер базы данных</th>
+                    <td>{{ "%.2f" % db_size }} МБ</td>
+                </tr>
+                <tr>
+                    <th>Количество строк в базе</th>
+                    <td>{{ total_logs }}</td>
+                </tr>
+                <tr>
+                    <th>Количество уникальных устройств</th>
+                    <td>{{ unique_devices }}</td>
+                </tr>
+                <tr>
+                    <th>Последний лог</th>
+                    <td>{{ last_log[1] if last_log else "Нет данных" }}</td>
+                </tr>
+                <tr>
+                    <th>Логи за последние 24 часа</th>
+                    <td>{{ logs_last_24h }}</td>
+                </tr>
+                <tr>
+                    <th>Самый активный IP</th>
+                    <td>{{ most_active_ip[0] if most_active_ip else "Нет данных" }} ({{ most_active_ip[1] if most_active_ip else 0 }} логов)</td>
+                </tr>
+                <tr>
+                    <th>Самое активное устройство</th>
+                    <td>{{ most_active_device[0] if most_active_device else "Нет данных" }} ({{ most_active_device[1] if most_active_device else 0 }} логов)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        © <a href="https://github.com/Makar-aka" target="_blank">MakarSPB</a>
+    </footer>
+</body>
+</html>

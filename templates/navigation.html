@@ -1,8 +1,11 @@
 <nav style="background-color: #007bff; padding: 10px; text-align: center;">
     <a href="/" style="color: white; text-decoration: none; margin: 0 15px;">Главная</a>
     <a href="/devices" style="color: white; text-decoration: none; margin: 0 15px;">Логи</a>
-    <a href="/settings" style="color: white; text-decoration: none; margin: 0 15px;">Настройки</a>
+    <a href="/statistics" style="color: white; text-decoration: none; margin: 0 15px;">Статистика</a>
+    {% if current_user.role == 'admin' %}
     <a href="/admin/users" style="color: white; text-decoration: none; margin: 0 15px;">Пользователи</a>
+    <a href="/settings" style="color: white; text-decoration: none; margin: 0 15px;">Настройки</a>
+    {% endif %}
     <a href="/change_password" style="color: white; text-decoration: none; margin: 0 15px;">Сменить пароль</a>
     <a href="/logout" style="color: white; text-decoration: none; margin: 0 15px;">Выйти</a>
 </nav>

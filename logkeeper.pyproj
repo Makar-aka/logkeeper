@@ -38,6 +38,7 @@
     <Content Include="templates\logs.html" />
     <Content Include="templates\navigation.html" />
     <Content Include="templates\settings.html" />
+    <Content Include="templates\statistics.html" />
     <Content Include="templates\user.html" />
     <Content Include="templates\users.html" />
   </ItemGroup>
