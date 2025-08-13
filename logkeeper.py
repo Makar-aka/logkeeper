@@ -92,13 +92,36 @@ def view_devices():
 @app.route('/logs/<device_id>', methods=['GET'])
 @login_required
 def view_logs_by_device(device_id):
+    # Получаем параметры из запроса
+    page = int(request.args.get('page', 1))  # Текущая страница
+    rows_per_page = int(request.args.get('rows_per_page', 10))  # Количество строк на странице
+
+    # Подключение к базе данных
     conn = sqlite3.connect(db.LOGS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM logs WHERE device_id = ? ORDER BY id DESC', (device_id,))
+
+    # Подсчет общего количества строк
+    cursor.execute('SELECT COUNT(*) FROM logs WHERE device_id = ?', (device_id,))
+    total_logs = cursor.fetchone()[0]
+
+    # Вычисление количества страниц
+    total_pages = (total_logs + rows_per_page - 1) // rows_per_page
+
+    # Получение логов для текущей страницы
+    offset = (page - 1) * rows_per_page
+    cursor.execute('SELECT * FROM logs WHERE device_id = ? ORDER BY id DESC LIMIT ? OFFSET ?', (device_id, rows_per_page, offset))
     logs = cursor.fetchall()
     conn.close()
-    return render_template('logs.html', logs=logs, device_id=device_id)
 
+    # Передача данных в шаблон
+    return render_template(
+        'logs.html',
+        logs=logs,
+        device_id=device_id,
+        page=page,
+        rows_per_page=rows_per_page,
+        total_pages=total_pages
+    )
 # Веб-интерфейс для просмотра логов
 @app.route('/logs', methods=['GET'])
 @login_required
