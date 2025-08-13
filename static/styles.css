@@ -223,7 +223,7 @@ footer {
         }
 /* Стили для таблицы логов */
 .logs-table {
-    width: 80%; /* Общая ширина таблицы */
+    width: 180%; /* Общая ширина таблицы */
     margin: 20px auto; /* Центрирование таблицы */
     border-collapse: collapse;
     font-size: 14px;
