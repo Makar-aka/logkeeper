@@ -54,8 +54,11 @@ footer {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 80%; /* Занимает 80% ширины экрана */
+    max-width: 1200px; /* Максимальная ширина */
+    min-width: 800px; /* Минимальная ширина */
     text-align: center;
+    margin: 0 auto; /* Центрирование контейнера */
 }
 
     .container h1 {
