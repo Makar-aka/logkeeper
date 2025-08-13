@@ -1,14 +1,14 @@
 {
     "Keenetic": {
         "log_format": "<\\d+>(\\w+ \\d+ \\d+:\\d+:\\d+) (\\S+) (.+)",
-        "description": "Логи роутеров Keenetic"
+        "description": "Р‹РѕРіРё СЂРѕСѓС‚РµСЂРѕРІ Keenetic"
     },
     "MikroTik": {
         "log_format": "(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+) (\\S+) (.+)",
-        "description": "Логи роутеров MikroTik"
+        "description": "Р‹РѕРіРё СЂРѕСѓС‚РµСЂРѕРІ MikroTik"
     },
     "Cisco": {
         "log_format": "<\\d+>(\\w+ \\d+ \\d+:\\d+:\\d+) (\\S+) (.+)",
-        "description": "Логи роутеров Cisco"
+        "description": "Р‹РѕРіРё СЂРѕСѓС‚РµСЂРѕРІ Cisco"
     }
 }
