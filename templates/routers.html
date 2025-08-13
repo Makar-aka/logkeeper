@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки роутеров</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'navigation.html' %}
+    <div class="container">
+        <h1>Настройки роутеров</h1>
+        <form method="POST">
+            <label for="device_id">Идентификатор устройства (device_id):</label>
+            <input type="text" id="device_id" name="device_id" required>
+            
+            <label for="model">Модель роутера:</label>
+            <select id="model" name="model" required>
+                {% for model, details in router_models.items() %}
+                <option value="{{ model }}">{{ model }} - {{ details.description }}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="description">Описание:</label>
+            <input type="text" id="description" name="description">
+            
+            <button type="submit">Добавить/Обновить</button>
+        </form>
+        
+        <h2>Список настроек</h2>
+        <table class="logs-table">
+            <thead>
+                <tr>
+                    <th>Идентификатор</th>
+                    <th>Модель</th>
+                    <th>Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for router in router_settings %}
+                <tr>
+                    <td>{{ router[1] }}</td>
+                    <td>{{ router[2] }}</td>
+                    <td>{{ router[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

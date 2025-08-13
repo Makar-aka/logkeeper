@@ -80,6 +80,21 @@ def user_panel():
         return 'Access denied', 403
     return render_template('user.html')
 
+@app.route('/admin/routers', methods=['GET', 'POST'])
+@login_required
+def manage_routers():
+    if current_user.role != 'admin':
+        return 'Access denied', 403
+
+    if request.method == 'POST':
+        device_id = request.form['device_id']
+        model = request.form['model']
+        description = request.form.get('description', '')
+        db.add_router_setting(device_id, model, description)
+
+    router_settings = db.get_router_settings()
+    return render_template('routers.html', router_settings=router_settings)
+
 @app.route('/devices', methods=['GET'])
 @login_required
 def view_devices():
@@ -166,29 +181,6 @@ def manage_users():
     conn.close()
 
     return render_template('users.html', users=users)
-
-@app.route('/user/change_password', methods=['GET', 'POST'])
-@login_required
-def user_change_password():
-    if request.method == 'POST':
-        current_password = request.form['current_password']
-        new_password = request.form['new_password']
-        confirm_password = request.form['confirm_password']
-
-        # Проверяем, что текущий пароль введен правильно
-        user = db.validate_user(current_user.username, current_password)
-        if not user:
-            return 'Текущий пароль введен неверно', 400
-
-        # Проверяем, что новый пароль совпадает с подтверждением
-        if new_password != confirm_password:
-            return 'Новый пароль и подтверждение не совпадают', 400
-
-        # Обновляем пароль
-        db.update_user_password(current_user.username, new_password)
-        return 'Пароль успешно изменен', 200
-
-    return render_template('user_change_password.html')
 
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required

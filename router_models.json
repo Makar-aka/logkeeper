@@ -4,8 +4,12 @@
     "description": "Логи роутеров Keenetic"
   },
   "MikroTik": {
-    "log_format": "(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+) (\\S+),(.+)",
+    "log_format": "(\\S+): (\\S+),(.+)",
     "description": "Логи роутеров MikroTik",
     "prefix_as_device_id": true
+  },
+  "Cisco": {
+    "log_format": "<\\d+>(\\w+ \\d+ \\d+:\\d+:\\d+) (\\S+) (.+)",
+    "description": "Логи роутеров Cisco"
   }
 }

@@ -155,3 +155,39 @@ def update_user_password(username, new_password):
     cursor.execute('UPDATE users SET password = ? WHERE username = ?', (new_password, username))
     conn.commit()
     conn.close()
+
+def add_router_setting(identifier, model, description=None):
+    """Добавление настройки для роутера."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('INSERT OR IGNORE INTO router_settings (identifier, model, description) VALUES (?, ?, ?)',
+                   (identifier, model, description))
+    conn.commit()
+    conn.close()
+
+def get_router_settings():
+    """Получение всех настроек роутеров."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM router_settings')
+    settings = cursor.fetchall()
+    conn.close()
+    return settings
+
+def update_router_setting(identifier, model, description=None):
+    """Обновление настройки для роутера."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('UPDATE router_settings SET model = ?, description = ? WHERE identifier = ?',
+                   (model, description, identifier))
+    conn.commit()
+    conn.close()
+
+def get_router_model_by_identifier(identifier):
+    """Получение модели роутера по идентификатору."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('SELECT model FROM router_settings WHERE identifier = ?', (identifier,))
+    result = cursor.fetchone()
+    conn.close()
+    return result[0] if result else None
