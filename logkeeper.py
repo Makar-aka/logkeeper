@@ -4,6 +4,7 @@ import db  # Импортируем модуль db
 import socket
 import threading
 import logging
+import sqlite3
 
 # Настройка логирования
 logging.basicConfig(
