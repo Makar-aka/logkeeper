@@ -53,7 +53,7 @@ def init_db():
         cursor_keeper.execute('ALTER TABLE users ADD COLUMN role TEXT CHECK(role IN ("admin", "user")) NOT NULL DEFAULT "user"')
     conn_keeper.commit()
 
-    # Добавление настроек по умолчанию
+    # Создаем таблицу настроек, если она отсутствует
     cursor_keeper.execute('''
         CREATE TABLE IF NOT EXISTS settings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,20 +61,6 @@ def init_db():
             value TEXT NOT NULL
         )
     ''')
-    default_settings = [
-        ('log_retention_days', '30'),
-        ('max_db_size_mb', '100'),
-        ('allow_new_routers', 'true'),
-        ('log_server_port', '1514'),  # Добавляем настройку порта
-        ('default_router_model', 'Keenetic')  # Модель роутера по умолчанию
-    ]
-    for key, value in default_settings:
-        cursor_keeper.execute('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', (key, value))
-    # Добавление администратора по умолчанию
-    cursor_keeper.execute('SELECT * FROM users WHERE username = "admin"')
-    admin_exists = cursor_keeper.fetchone()
-    if not admin_exists:
-        cursor_keeper.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', ('admin', 'admin1', 'admin'))
     conn_keeper.commit()
     conn_keeper.close()
 
@@ -121,22 +107,30 @@ def load_router_models():
     with open(ROUTER_MODELS_FILE, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def parse_log_message(log_message, model="Keenetic"):
+def parse_log_message(log_message, model=None):
     """Парсер логов с поддержкой моделей."""
+    if model is None:
+        model = get_settings().get("default_router_model")  # Получаем модель из настроек
     router_models = load_router_models()
     model_settings = router_models.get(model, {})
-    log_format = model_settings.get("log_format", r"<\d+>(\w+ \d+ \d+:\d+:\d+) (\S+) (.+)")
+    log_format = model_settings.get("log_format")
+    prefix_as_device_id = model_settings.get("prefix_as_device_id", False)
+
     try:
         match = re.match(log_format, log_message)
         if match:
-            timestamp, device_id, message = match.groups()
+            if prefix_as_device_id:
+                timestamp, prefix, message = match.groups()
+                device_id = prefix
+            else:
+                timestamp, device_id, message = match.groups()
             return timestamp, device_id, message
         else:
             return None, "Unknown", log_message
     except Exception as e:
         return None, "Unknown", log_message
 
-def insert_log(ip, log, model="Keenetic"):
+def insert_log(ip, log, model=None):
     """Добавление лога в базу данных logs."""
     timestamp, device_id, message = parse_log_message(log, model)  # Парсим лог
     conn = sqlite3.connect(LOGS_DB_NAME)
