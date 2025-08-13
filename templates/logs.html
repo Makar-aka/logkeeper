@@ -10,14 +10,22 @@
     {% include 'navigation.html' %}
     <div class="container">
         <h1>Логи</h1>
-        <div class="logs-list">
-            {% for log in logs %}
-            <div class="log-entry">
-                <span class="log-ip">{{ log[1] }}</span> |
-                <span class="log-message">{{ log[2] }}</span>
-            </div>
-            {% endfor %}
-        </div>
+        <table class="logs-table">
+            <thead>
+                <tr>
+                    <th class="ip-column">IP-адрес</th>
+                    <th class="log-column">Лог</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log[1] }}</td> <!-- IP -->
+                    <td>{{ log[2] }}</td> <!-- Лог -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     <footer>
         © <a href="https://github.com/Makar-aka" target="_blank">MakarSPB</a>
