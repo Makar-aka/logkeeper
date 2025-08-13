@@ -157,6 +157,30 @@ def manage_users():
     conn.close()
 
     return render_template('users.html', users=users)
+
+@app.route('/user/change_password', methods=['GET', 'POST'])
+@login_required
+def user_change_password():
+    if request.method == 'POST':
+        current_password = request.form['current_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+
+        # Проверяем, что текущий пароль введен правильно
+        user = db.validate_user(current_user.username, current_password)
+        if not user:
+            return 'Текущий пароль введен неверно', 400
+
+        # Проверяем, что новый пароль совпадает с подтверждением
+        if new_password != confirm_password:
+            return 'Новый пароль и подтверждение не совпадают', 400
+
+        # Обновляем пароль
+        db.update_user_password(current_user.username, new_password)
+        return 'Пароль успешно изменен', 200
+
+    return render_template('user_change_password.html')
+
 # Маршрут для изменения пароля
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required

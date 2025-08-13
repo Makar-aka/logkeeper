@@ -225,6 +225,37 @@ footer {
             background-color: #0056b3;
         }
 
+/* Стили для формы смены пароля */
+form {
+    margin-bottom: 20px;
+}
+
+    form label {
+        display: block;
+        margin: 10px 0 5px;
+        font-weight: bold;
+    }
+
+    form input,
+    form button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    form button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
 /* Стили для списка устройств */
 .device-list {
     list-style: none;

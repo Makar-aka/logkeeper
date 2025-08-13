@@ -41,6 +41,7 @@
     <Content Include="templates\statistics.html" />
     <Content Include="templates\user.html" />
     <Content Include="templates\users.html" />
+    <Content Include="templates\user_change_password.html" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
