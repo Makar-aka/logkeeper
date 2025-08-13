@@ -234,6 +234,8 @@ footer {
     border-bottom: 1px solid #ddd;
     word-wrap: break-word;
     white-space: pre-wrap; /* Сохраняет форматирование текста */
+    display: flex;
+    gap: 10px;
 }
 
     .log-entry:last-child {
@@ -243,9 +245,11 @@ footer {
 .log-ip {
     font-weight: bold;
     color: #007bff;
+    flex-shrink: 0; /* IP-адрес не сжимается */
+    width: 150px; /* Фиксированная ширина для IP */
 }
 
 .log-message {
-    margin-left: 10px;
     color: #555;
+    flex-grow: 1; /* Сообщение занимает оставшееся пространство */
 }
