@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 LOGS_DB_NAME = "logs.db"
@@ -5,20 +6,25 @@ LOGKEEPER_DB_NAME = "logkeeper.db"
 
 def init_db():
     """Инициализация баз данных."""
-    # Инициализация базы данных для логов
+    # Проверяем и создаем базу данных для логов, если она отсутствует
+    if not os.path.exists(LOGS_DB_NAME):
+        print(f"База данных {LOGS_DB_NAME} отсутствует. Создаем новую...")
     conn_logs = sqlite3.connect(LOGS_DB_NAME)
     cursor_logs = conn_logs.cursor()
     cursor_logs.execute('''
         CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ip TEXT,
-            log TEXT
+            log TEXT,
+            device_id TEXT
         )
     ''')
     conn_logs.commit()
     conn_logs.close()
 
-    # Инициализация базы данных для настроек и пользователей
+    # Проверяем и создаем базу данных для настроек и пользователей, если она отсутствует
+    if not os.path.exists(LOGKEEPER_DB_NAME):
+        print(f"База данных {LOGKEEPER_DB_NAME} отсутствует. Создаем новую...")
     conn_keeper = sqlite3.connect(LOGKEEPER_DB_NAME)
     cursor_keeper = conn_keeper.cursor()
     cursor_keeper.execute('''
