@@ -1,14 +1,11 @@
 {
-    "Keenetic": {
-        "log_format": "<\\d+>(\\w+ \\d+ \\d+:\\d+:\\d+) (\\S+) (.+)",
-        "description": "Ћоги роутеров Keenetic"
-    },
-    "MikroTik": {
-        "log_format": "(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+) (\\S+) (.+)",
-        "description": "Ћоги роутеров MikroTik"
-    },
-    "Cisco": {
-        "log_format": "<\\d+>(\\w+ \\d+ \\d+:\\d+:\\d+) (\\S+) (.+)",
-        "description": "Ћоги роутеров Cisco"
-    }
+  "Keenetic": {
+    "log_format": "<\\d+>(\\w+ \\d+ \\d+:\\d+:\\d+) (\\S+) (.+)",
+    "description": "Логи роутеров Keenetic"
+  },
+  "MikroTik": {
+    "log_format": "(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+) (\\S+),(.+)",
+    "description": "Логи роутеров MikroTik",
+    "prefix_as_device_id": true
+  }
 }
