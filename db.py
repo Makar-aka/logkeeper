@@ -11,9 +11,8 @@ def init_db():
     cursor_logs.execute('''
         CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            router_ip TEXT,
-            message TEXT
+            ip TEXT,
+            log TEXT
         )
     ''')
     conn_logs.commit()
@@ -89,11 +88,11 @@ def validate_user(username, password):
     conn.close()
     return user
 
-def insert_log(router_ip, message):
+def insert_log(ip, log):
     """Добавление лога в базу данных logs."""
     conn = sqlite3.connect(LOGS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO logs (router_ip, message) VALUES (?, ?)', (router_ip, message))
+    cursor.execute('INSERT INTO logs (ip, log) VALUES (?, ?)', (ip, log))
     conn.commit()
     conn.close()
 
@@ -101,7 +100,7 @@ def get_logs():
     """Получение всех логов из базы данных logs."""
     conn = sqlite3.connect(LOGS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM logs ORDER BY timestamp DESC')
+    cursor.execute('SELECT * FROM logs ORDER BY id DESC')
     logs = cursor.fetchall()
     conn.close()
     return logs
