@@ -223,32 +223,36 @@ footer {
         }
 /* Стили для таблицы логов */
 .logs-table {
-    width: 180%; /* Общая ширина таблицы */
+    width: 80%; /* Общая ширина таблицы */
     margin: 20px auto; /* Центрирование таблицы */
-    border-collapse: collapse;
-    font-size: 14px;
+    border-collapse: separate; /* Разделение границ ячеек */
+    border-spacing: 0; /* Убираем отступы между ячейками */
+    font-size: 16px; /* Увеличенный шрифт для удобства чтения */
     text-align: left;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень для таблицы */
+    border-radius: 8px; /* Закругленные углы */
+    overflow: hidden; /* Убираем выходящие элементы */
 }
 
-    .logs-table th,
-    .logs-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
+    .logs-table th {
+        background-color: #007bff; /* Синий фон для заголовков */
+        color: white; /* Белый текст */
+        text-align: center;
+        padding: 12px 8px; /* Увеличенные отступы */
+        font-weight: bold;
     }
 
-    .logs-table th {
-        background-color: #007bff;
-        color: white;
-        text-align: center;
+    .logs-table td {
+        padding: 12px 8px; /* Увеличенные отступы */
+        border-bottom: 1px solid #ddd; /* Линия между строками */
     }
 
     .logs-table tr:nth-child(even) {
-        background-color: #f9f9f9;
+        background-color: #f9f9f9; /* Светлый фон для четных строк */
     }
 
     .logs-table tr:hover {
-        background-color: #f1f1f1;
+        background-color: #f1f1f1; /* Выделение строки при наведении */
     }
 
     .logs-table .ip-column {
