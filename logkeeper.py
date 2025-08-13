@@ -92,8 +92,10 @@ def manage_routers():
         description = request.form.get('description', '')
         db.add_router_setting(device_id, model, description)
 
+    # Загрузка моделей роутеров из файла
+    router_models = db.load_router_models()
     router_settings = db.get_router_settings()
-    return render_template('routers.html', router_settings=router_settings)
+    return render_template('routers.html', router_settings=router_settings, router_models=router_models)
 
 @app.route('/devices', methods=['GET'])
 @login_required
