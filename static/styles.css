@@ -224,6 +224,28 @@ footer {
         .change-password-container button:hover {
             background-color: #0056b3;
         }
+
+/* Стили для списка устройств */
+.device-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+    .device-list li {
+        margin: 10px 0;
+    }
+
+    .device-list a {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 18px;
+    }
+
+        .device-list a:hover {
+            text-decoration: underline;
+        }
+
 /* Стили для таблицы логов */
 .logs-table {
     width: 80%; /* Общая ширина таблицы */

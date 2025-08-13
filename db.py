@@ -88,11 +88,20 @@ def validate_user(username, password):
     conn.close()
     return user
 
+def extract_device_id(log_message):
+    """Извлечение ID устройства из сообщения."""
+    try:
+        parts = log_message.split(' ')
+        return parts[2]  # ID устройства находится в третьей части сообщения
+    except IndexError:
+        return "Unknown"
+
 def insert_log(ip, log):
     """Добавление лога в базу данных logs."""
+    device_id = extract_device_id(log)  # Извлекаем ID устройства
     conn = sqlite3.connect(LOGS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO logs (ip, log) VALUES (?, ?)', (ip, log))
+    cursor.execute('INSERT INTO logs (ip, log, device_id) VALUES (?, ?, ?)', (ip, log, device_id))
     conn.commit()
     conn.close()
 

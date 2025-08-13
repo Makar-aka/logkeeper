@@ -78,6 +78,26 @@ def user_panel():
         return 'Access denied', 403
     return render_template('user.html')
 
+@app.route('/devices', methods=['GET'])
+@login_required
+def view_devices():
+    conn = sqlite3.connect(db.LOGS_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('SELECT DISTINCT device_id FROM logs ORDER BY device_id ASC')
+    devices = cursor.fetchall()
+    conn.close()
+    return render_template('devices.html', devices=devices)
+
+@app.route('/logs/<device_id>', methods=['GET'])
+@login_required
+def view_logs_by_device(device_id):
+    conn = sqlite3.connect(db.LOGS_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM logs WHERE device_id = ? ORDER BY id DESC', (device_id,))
+    logs = cursor.fetchall()
+    conn.close()
+    return render_template('logs.html', logs=logs, device_id=device_id)
+
 # Веб-интерфейс для просмотра логов
 @app.route('/logs', methods=['GET'])
 @login_required

@@ -33,6 +33,7 @@
     <Content Include="static\styles.css" />
     <Content Include="templates\admin.html" />
     <Content Include="templates\change_password.html" />
+    <Content Include="templates\devices.html" />
     <Content Include="templates\login.html" />
     <Content Include="templates\logs.html" />
     <Content Include="templates\navigation.html" />

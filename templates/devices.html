@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Устройства</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'navigation.html' %}
+    <div class="container">
+        <h1>Список устройств</h1>
+        <ul class="device-list">
+            {% for device in devices %}
+            <li>
+                <a href="{{ url_for('view_logs_by_device', device_id=device[0]) }}">{{ device[0] }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <footer>
+        © <a href="https://github.com/Makar-aka" target="_blank">MakarSPB</a>
+    </footer>
+</body>
+</html>
