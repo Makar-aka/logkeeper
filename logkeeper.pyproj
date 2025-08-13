@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
+    <Content Include="router_models.json" />
     <Content Include="static\styles.css" />
     <Content Include="templates\admin.html" />
     <Content Include="templates\change_password.html" />

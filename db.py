@@ -1,8 +1,11 @@
 import os
 import sqlite3
+import json
+import re
 
 LOGS_DB_NAME = "logs.db"
 LOGKEEPER_DB_NAME = "logkeeper.db"
+ROUTER_MODELS_FILE = "router_models.json"
 
 def init_db():
     """Инициализация баз данных."""
@@ -62,7 +65,8 @@ def init_db():
         ('log_retention_days', '30'),
         ('max_db_size_mb', '100'),
         ('allow_new_routers', 'true'),
-        ('log_server_port', '1514')  # Добавляем настройку порта
+        ('log_server_port', '1514'),  # Добавляем настройку порта
+        ('default_router_model', 'Keenetic')  # Модель роутера по умолчанию
     ]
     for key, value in default_settings:
         cursor_keeper.execute('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', (key, value))
@@ -109,20 +113,35 @@ def validate_user(username, password):
     conn.close()
     return user
 
-def extract_device_id(log_message):
-    """Извлечение ID устройства из сообщения."""
-    try:
-        parts = log_message.split(' ')
-        return parts[3]  # ID устройства находится в четвертой части сообщения
-    except IndexError:
-        return "Unknown"
+def load_router_models():
+    """Загрузка настроек моделей роутеров из файла."""
+    if not os.path.exists(ROUTER_MODELS_FILE):
+        print(f"Файл {ROUTER_MODELS_FILE} не найден. Используются настройки по умолчанию.")
+        return {}
+    with open(ROUTER_MODELS_FILE, "r", encoding="utf-8") as file:
+        return json.load(file)
 
-def insert_log(ip, log):
+def parse_log_message(log_message, model="Keenetic"):
+    """Парсер логов с поддержкой моделей."""
+    router_models = load_router_models()
+    model_settings = router_models.get(model, {})
+    log_format = model_settings.get("log_format", r"<\d+>(\w+ \d+ \d+:\d+:\d+) (\S+) (.+)")
+    try:
+        match = re.match(log_format, log_message)
+        if match:
+            timestamp, device_id, message = match.groups()
+            return timestamp, device_id, message
+        else:
+            return None, "Unknown", log_message
+    except Exception as e:
+        return None, "Unknown", log_message
+
+def insert_log(ip, log, model="Keenetic"):
     """Добавление лога в базу данных logs."""
-    device_id = extract_device_id(log)  # Извлекаем ID устройства
+    timestamp, device_id, message = parse_log_message(log, model)  # Парсим лог
     conn = sqlite3.connect(LOGS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO logs (ip, log, device_id) VALUES (?, ?, ?)', (ip, log, device_id))
+    cursor.execute('INSERT INTO logs (ip, log, device_id, timestamp) VALUES (?, ?, ?, ?)', (ip, message, device_id, timestamp))
     conn.commit()
     conn.close()
 

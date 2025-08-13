@@ -123,6 +123,7 @@ def view_logs_by_device(device_id):
         rows_per_page=rows_per_page,
         total_pages=total_pages
     )
+
 # Веб-интерфейс для просмотра логов
 @app.route('/logs', methods=['GET'])
 @login_required
@@ -166,13 +167,6 @@ def manage_users():
 
     return render_template('users.html', users=users)
 
-    # Получение списка пользователей
-    cursor.execute('SELECT id, username, role FROM users ORDER BY id ASC')
-    users = cursor.fetchall()
-    conn.close()
-
-    return render_template('users.html', users=users)
-
 @app.route('/user/change_password', methods=['GET', 'POST'])
 @login_required
 def user_change_password():
@@ -196,7 +190,6 @@ def user_change_password():
 
     return render_template('user_change_password.html')
 
-# Маршрут для изменения пароля
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
 def change_password():
@@ -259,7 +252,6 @@ def view_statistics():
         most_active_device=most_active_device
     )
 
-# Маршрут для настроек
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
@@ -280,7 +272,6 @@ def settings():
     settings = db.get_settings()
     return render_template('settings.html', settings=settings)
 
-# Функция для приема логов
 def start_log_server(host='0.0.0.0', port=1514):  # Используем порт 1514 по умолчанию
     """Запуск сервера для приема логов."""
     def handle_logs():
@@ -299,7 +290,6 @@ def start_log_server(host='0.0.0.0', port=1514):  # Используем пор�
     thread = threading.Thread(target=handle_logs, daemon=True)
     thread.start()
 
-# Запуск сервера логов при старте приложения
 if __name__ == '__main__':
     db.init_db()
     start_log_server()
