@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление пользователями</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'navigation.html' %}
+    <div class="container">
+        <h1>Управление пользователями</h1>
+
+        <!-- Форма добавления нового пользователя -->
+        <form method="POST" style="margin-bottom: 20px;">
+            <h2>Добавить пользователя</h2>
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+            <label for="role">Роль:</label>
+            <select id="role" name="role" required>
+                <option value="admin">Администратор</option>
+                <option value="user">Пользователь</option>
+            </select>
+            <button type="submit">Добавить</button>
+        </form>
+
+        <!-- Список пользователей -->
+        <h2>Список пользователей</h2>
+        <table class="logs-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Имя пользователя</th>
+                    <th>Роль</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user[0] }}</td>
+                    <td>{{ user[1] }}</td>
+                    <td>{{ user[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        © <a href="https://github.com/Makar-aka" target="_blank">MakarSPB</a>
+    </footer>
+</body>
+</html>

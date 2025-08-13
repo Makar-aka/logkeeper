@@ -129,6 +129,33 @@ def view_logs():
     logs = db.get_logs()
     return render_template('logs.html', logs=logs)
 
+@app.route('/admin/users', methods=['GET', 'POST'])
+@login_required
+def manage_users():
+    if current_user.role != 'admin':
+        return 'Access denied', 403
+
+    conn = sqlite3.connect(db.LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # Добавление нового пользователя
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role = request.form.get('role')
+        if username and password and role:
+            try:
+                cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
+                conn.commit()
+            except sqlite3.IntegrityError:
+                return 'Пользователь с таким именем уже существует', 400
+
+    # Получение списка пользователей
+    cursor.execute('SELECT id, username, role FROM users ORDER BY id ASC')
+    users = cursor.fetchall()
+    conn.close()
+
+    return render_template('users.html', users=users)
 # Маршрут для изменения пароля
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
