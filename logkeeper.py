@@ -5,6 +5,7 @@ import socket
 import threading
 import logging
 import sqlite3
+import os  # Импортируем os для работы с файловой системой
 
 # Настройка логирования
 logging.basicConfig(
