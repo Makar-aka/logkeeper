@@ -16,9 +16,17 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ip TEXT,
             log TEXT,
-            device_id TEXT
+            device_id TEXT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    # Проверяем наличие столбцов и добавляем их, если они отсутствуют
+    cursor_logs.execute("PRAGMA table_info(logs)")
+    existing_columns = [col[1] for col in cursor_logs.fetchall()]
+    if "timestamp" not in existing_columns:
+        cursor_logs.execute('ALTER TABLE logs ADD COLUMN timestamp DATETIME DEFAULT CURRENT_TIMESTAMP')
+    if "device_id" not in existing_columns:
+        cursor_logs.execute('ALTER TABLE logs ADD COLUMN device_id TEXT')
     conn_logs.commit()
     conn_logs.close()
 
@@ -35,6 +43,14 @@ def init_db():
             role TEXT CHECK(role IN ('admin', 'user')) NOT NULL
         )
     ''')
+    # Проверяем наличие столбцов и добавляем их, если они отсутствуют
+    cursor_keeper.execute("PRAGMA table_info(users)")
+    existing_columns = [col[1] for col in cursor_keeper.fetchall()]
+    if "role" not in existing_columns:
+        cursor_keeper.execute('ALTER TABLE users ADD COLUMN role TEXT CHECK(role IN ("admin", "user")) NOT NULL DEFAULT "user"')
+    conn_keeper.commit()
+
+    # Добавление настроек по умолчанию
     cursor_keeper.execute('''
         CREATE TABLE IF NOT EXISTS settings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,7 +58,6 @@ def init_db():
             value TEXT NOT NULL
         )
     ''')
-    # Добавление настроек по умолчанию
     default_settings = [
         ('log_retention_days', '30'),
         ('max_db_size_mb', '100'),
