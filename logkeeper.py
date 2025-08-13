@@ -140,16 +140,31 @@ def manage_users():
     cursor = conn.cursor()
 
     if request.method == 'POST':
-        # Добавление нового пользователя
-        username = request.form.get('username')
-        password = request.form.get('password')
-        role = request.form.get('role')
-        if username and password and role:
-            try:
-                cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
+        # Проверяем, что это запрос на изменение пароля
+        if 'user_id' in request.form and 'new_password' in request.form:
+            user_id = request.form.get('user_id')
+            new_password = request.form.get('new_password')
+            if user_id and new_password:
+                cursor.execute('UPDATE users SET password = ? WHERE id = ?', (new_password, user_id))
                 conn.commit()
-            except sqlite3.IntegrityError:
-                return 'Пользователь с таким именем уже существует', 400
+        else:
+            # Добавление нового пользователя
+            username = request.form.get('username')
+            password = request.form.get('password')
+            role = request.form.get('role')
+            if username and password and role:
+                try:
+                    cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
+                    conn.commit()
+                except sqlite3.IntegrityError:
+                    return 'Пользователь с таким именем уже существует', 400
+
+    # Получение списка пользователей
+    cursor.execute('SELECT id, username, role FROM users ORDER BY id ASC')
+    users = cursor.fetchall()
+    conn.close()
+
+    return render_template('users.html', users=users)
 
     # Получение списка пользователей
     cursor.execute('SELECT id, username, role FROM users ORDER BY id ASC')

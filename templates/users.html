@@ -34,6 +34,7 @@
                     <th>ID</th>
                     <th>Имя пользователя</th>
                     <th>Роль</th>
+                    <th>Изменить пароль</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +43,13 @@
                     <td>{{ user[0] }}</td>
                     <td>{{ user[1] }}</td>
                     <td>{{ user[2] }}</td>
+                    <td>
+                        <form method="POST" style="display: inline;">
+                            <input type="hidden" name="user_id" value="{{ user[0] }}">
+                            <input type="password" name="new_password" placeholder="Новый пароль" required>
+                            <button type="submit">Сменить</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
