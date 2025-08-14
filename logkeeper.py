@@ -258,6 +258,26 @@ def view_statistics():
         most_active_ip=most_active_ip,
         most_active_device=most_active_device
     )
+@app.route('/admin/approve_ip', methods=['POST'])
+@login_required
+def approve_ip():
+    if current_user.role != 'admin':
+        return 'Access denied', 403
+
+    pending_ip = request.form.get('pending_ip')
+    model = request.form.get('model')
+
+    if not pending_ip or not model:
+        return 'Invalid data', 400
+
+    # Добавляем IP в разрешенные
+    db.add_allowed_ip(pending_ip)
+    # Добавляем настройки роутера
+    db.add_router_setting(pending_ip, model)
+    # Удаляем IP из списка ожидающих
+    db.remove_pending_ip(pending_ip)
+
+    return redirect(url_for('manage_routers'))
 
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
