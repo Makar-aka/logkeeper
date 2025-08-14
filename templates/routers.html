@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Настройки роутеров</title>
+    <title>Настройки устройств</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     {% include 'navigation.html' %}
     <div class="container">
-        <h1>Настройки роутеров</h1>
+        <h1>Настройки устройств</h1>
 
         <!-- Форма добавления нового устройства -->
         <form method="POST">
@@ -49,7 +49,7 @@
         <table class="logs-table">
             <thead>
                 <tr>
-                    <th>Идентификатор</th>
+                    <th>IP</th>
                     <th>Модель</th>
                     <th>Описание</th>
                     <th>Действия</th>
