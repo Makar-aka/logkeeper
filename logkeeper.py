@@ -343,6 +343,23 @@ def settings():
     settings = db.get_settings()
     return render_template('settings.html', settings=settings)
 
+@app.route('/user/change_password', methods=['GET', 'POST'])
+@login_required
+def user_change_password():
+    if current_user.role != 'user':
+        return 'Access denied', 403
+
+    if request.method == 'POST':
+        new_password = request.form['new_password']
+        if not new_password:
+            return 'Password cannot be empty', 400
+
+        # Обновляем пароль текущего пользователя
+        db.update_user_password(current_user.username, db.hash_password(new_password))
+        return 'Password updated successfully', 200
+
+    return render_template('user_change_password.html')
+
 def start_log_server(host='0.0.0.0', port=1514):  # Используем порт 1514 по умолчанию
     """Запуск сервера для приема логов."""
     def handle_logs():
