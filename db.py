@@ -2,11 +2,16 @@ import os
 import sqlite3
 import json
 import re
+import hashlib  # Для хэширования паролей
 
 LOGS_DB_NAME = "logs.db"
 USERS_DB_NAME = "users.db"
 ROUTERS_DB_NAME = "routers.db"
 ROUTER_MODELS_FILE = "router_models.json"
+
+def hash_password(password):
+    """Хэширование пароля с использованием SHA-256."""
+    return hashlib.sha256(password.encode()).hexdigest()
 
 def init_db():
     """Инициализация баз данных."""
@@ -40,6 +45,16 @@ def init_db():
             role TEXT CHECK(role IN ('admin', 'user')) NOT NULL
         )
     ''')
+    # Проверяем, есть ли пользователи в таблице
+    cursor_users.execute('SELECT COUNT(*) FROM users')
+    if cursor_users.fetchone()[0] == 0:
+        # Добавляем пользователя admin с паролем admin1
+        hashed_password = hash_password("admin1")
+        cursor_users.execute('''
+            INSERT INTO users (username, password, role)
+            VALUES (?, ?, ?)
+        ''', ("admin", hashed_password, "admin"))
+        print("Пользователь admin добавлен с паролем admin1")
     conn_users.commit()
     conn_users.close()
 
