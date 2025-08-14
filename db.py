@@ -83,6 +83,22 @@ def init_db():
             ip TEXT UNIQUE NOT NULL
         )
     ''')
+    # Создаем таблицу settings
+    cursor_routers.execute('''
+        CREATE TABLE IF NOT EXISTS settings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key TEXT UNIQUE NOT NULL,
+            value TEXT NOT NULL
+        )
+    ''')
+    # Проверяем, есть ли настройки в таблице settings
+    cursor_routers.execute('SELECT COUNT(*) FROM settings')
+    if cursor_routers.fetchone()[0] == 0:
+        # Добавляем настройку log_server_port по умолчанию
+        cursor_routers.execute('''
+            INSERT INTO settings (key, value) VALUES ('log_server_port', '1514')
+        ''')
+        print("Добавлена настройка log_server_port со значением 1514")
     conn_routers.commit()
     conn_routers.close()
 
