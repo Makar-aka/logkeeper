@@ -1,21 +1,21 @@
 import os
 import sqlite3
 import json
-import re
 import hashlib  # Для хэширования паролей
 
+# Имена баз данных
 LOGS_DB_NAME = "logs.db"
 USERS_DB_NAME = "users.db"
 ROUTERS_DB_NAME = "routers.db"
 ROUTER_MODELS_FILE = "router_models.json"
 
+# Хэширование пароля
 def hash_password(password):
-    """Хэширование пароля с использованием SHA-256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
+# Инициализация баз данных
 def init_db():
-    """Инициализация баз данных."""
-    # Проверяем и создаем базу данных для логов, если она отсутствует
+    # Логи
     if not os.path.exists(LOGS_DB_NAME):
         print(f"База данных {LOGS_DB_NAME} отсутствует. Создаем новую...")
     conn_logs = sqlite3.connect(LOGS_DB_NAME)
@@ -32,7 +32,7 @@ def init_db():
     conn_logs.commit()
     conn_logs.close()
 
-    # Создаем базу данных для пользователей
+    # Пользователи
     if not os.path.exists(USERS_DB_NAME):
         print(f"База данных {USERS_DB_NAME} отсутствует. Создаем новую...")
     conn_users = sqlite3.connect(USERS_DB_NAME)
@@ -45,10 +45,8 @@ def init_db():
             role TEXT CHECK(role IN ('admin', 'user')) NOT NULL
         )
     ''')
-    # Проверяем, есть ли пользователи в таблице
     cursor_users.execute('SELECT COUNT(*) FROM users')
     if cursor_users.fetchone()[0] == 0:
-        # Добавляем пользователя admin с паролем admin1
         hashed_password = hash_password("admin1")
         cursor_users.execute('''
             INSERT INTO users (username, password, role)
@@ -58,7 +56,7 @@ def init_db():
     conn_users.commit()
     conn_users.close()
 
-    # Создаем базу данных для роутеров
+    # Роутеры
     if not os.path.exists(ROUTERS_DB_NAME):
         print(f"База данных {ROUTERS_DB_NAME} отсутствует. Создаем новую...")
     conn_routers = sqlite3.connect(ROUTERS_DB_NAME)
@@ -83,7 +81,6 @@ def init_db():
             ip TEXT UNIQUE NOT NULL
         )
     ''')
-    # Создаем таблицу settings
     cursor_routers.execute('''
         CREATE TABLE IF NOT EXISTS settings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -91,19 +88,23 @@ def init_db():
             value TEXT NOT NULL
         )
     ''')
-    # Проверяем, есть ли настройки в таблице settings
-    cursor_routers.execute('SELECT COUNT(*) FROM settings')
+    cursor_routers.execute('SELECT COUNT(*) FROM settings WHERE key = "log_server_port"')
     if cursor_routers.fetchone()[0] == 0:
-        # Добавляем настройку log_server_port по умолчанию
         cursor_routers.execute('''
             INSERT INTO settings (key, value) VALUES ('log_server_port', '1514')
         ''')
         print("Добавлена настройка log_server_port со значением 1514")
+    cursor_routers.execute('SELECT COUNT(*) FROM settings WHERE key = "web_port"')
+    if cursor_routers.fetchone()[0] == 0:
+        cursor_routers.execute('''
+            INSERT INTO settings (key, value) VALUES ('web_port', '5000')
+        ''')
+        print("Добавлена настройка web_port со значением 5000")
     conn_routers.commit()
     conn_routers.close()
 
+# Работа с настройками
 def get_settings():
-    """Получение всех настроек из базы данных routers."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT key, value FROM settings')
@@ -111,8 +112,15 @@ def get_settings():
     conn.close()
     return settings
 
+def update_setting(key, value):
+    conn = sqlite3.connect(ROUTERS_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('UPDATE settings SET value = ? WHERE key = ?', (value, key))
+    conn.commit()
+    conn.close()
+
+# Работа с пользователями
 def validate_user_by_id(user_id):
-    """Проверка пользователя в базе данных users по ID."""
     conn = sqlite3.connect(USERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT id, username, role FROM users WHERE id = ?', (user_id,))
@@ -121,25 +129,24 @@ def validate_user_by_id(user_id):
     return user
 
 def validate_user(username, password):
-    """Проверка пользователя в базе данных users."""
     conn = sqlite3.connect(USERS_DB_NAME)
     cursor = conn.cursor()
-    hashed_password = hash_password(password)  # Хэшируем введенный пароль
+    hashed_password = hash_password(password)
     cursor.execute('SELECT id, username, role FROM users WHERE username = ? AND password = ?', (username, hashed_password))
     user = cursor.fetchone()
     conn.close()
     return user
 
 def update_user_password(username, new_password):
-    """Обновление пароля пользователя в базе данных users."""
     conn = sqlite3.connect(USERS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('UPDATE users SET password = ? WHERE username = ?', (new_password, username))
+    hashed_password = hash_password(new_password)
+    cursor.execute('UPDATE users SET password = ? WHERE username = ?', (hashed_password, username))
     conn.commit()
     conn.close()
 
+# Работа с роутерами
 def add_router_setting(identifier, model, description=None):
-    """Добавление настройки для роутера."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('INSERT OR IGNORE INTO router_settings (identifier, model, description) VALUES (?, ?, ?)',
@@ -148,7 +155,6 @@ def add_router_setting(identifier, model, description=None):
     conn.close()
 
 def get_router_settings():
-    """Получение всех настроек роутеров."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM router_settings')
@@ -157,7 +163,6 @@ def get_router_settings():
     return settings
 
 def update_router_setting(identifier, model, description=None):
-    """Обновление настройки для роутера."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('UPDATE router_settings SET model = ?, description = ? WHERE identifier = ?',
@@ -166,25 +171,19 @@ def update_router_setting(identifier, model, description=None):
     conn.close()
 
 def delete_router_setting(identifier):
-    """Удаление настройки роутера по идентификатору и добавление его IP в список ожидающих."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
-
-    # Получаем IP роутера перед удалением
     cursor.execute('SELECT identifier FROM router_settings WHERE identifier = ?', (identifier,))
     result = cursor.fetchone()
     if result:
         ip = result[0]
-        # Добавляем IP в список ожидающих
         add_pending_ip(ip)
-
-    # Удаляем роутер из настроек
     cursor.execute('DELETE FROM router_settings WHERE identifier = ?', (identifier,))
     conn.commit()
     conn.close()
 
+# Работа с IP
 def is_ip_allowed(ip):
-    """Проверяет, разрешен ли IP."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT 1 FROM allowed_ips WHERE ip = ?', (ip,))
@@ -193,7 +192,6 @@ def is_ip_allowed(ip):
     return result is not None
 
 def add_allowed_ip(ip):
-    """Добавляет IP в список разрешенных."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('INSERT OR IGNORE INTO allowed_ips (ip) VALUES (?)', (ip,))
@@ -201,7 +199,6 @@ def add_allowed_ip(ip):
     conn.close()
 
 def add_pending_ip(ip):
-    """Добавляет IP в список ожидающих."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('INSERT OR IGNORE INTO pending_ips (ip) VALUES (?)', (ip,))
@@ -209,7 +206,6 @@ def add_pending_ip(ip):
     conn.close()
 
 def get_pending_ips():
-    """Возвращает список ожидающих IP."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT ip FROM pending_ips')
@@ -218,29 +214,14 @@ def get_pending_ips():
     return ips
 
 def remove_pending_ip(ip):
-    """Удаляет IP из списка ожидающих."""
     conn = sqlite3.connect(ROUTERS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('DELETE FROM pending_ips WHERE ip = ?', (ip,))
     conn.commit()
     conn.close()
 
-def load_router_models():
-    """Загрузка настроек моделей роутеров из файла."""
-    if not os.path.exists(ROUTER_MODELS_FILE):
-        print(f"Файл {ROUTER_MODELS_FILE} не найден. Используются настройки по умолчанию.")
-        return {}
-    with open(ROUTER_MODELS_FILE, "r", encoding="utf-8") as file:
-        return json.load(file)
-
-# Удаляем эту функцию, если она больше не нужна
-def parse_log_message(log_message, model=None):
-    """Парсер логов с поддержкой моделей."""
-    # Логика парсинга больше не нужна
-    pass
-
+# Работа с логами
 def insert_log(ip, log, device_id):
-    """Добавление лога в базу данных logs."""
     conn = sqlite3.connect(LOGS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('INSERT INTO logs (ip, log, device_id, timestamp) VALUES (?, ?, ?, datetime("now"))', (ip, log, device_id))
@@ -248,10 +229,17 @@ def insert_log(ip, log, device_id):
     conn.close()
 
 def get_logs():
-    """Получение всех логов из базы данных logs."""
     conn = sqlite3.connect(LOGS_DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM logs ORDER BY id DESC')
     logs = cursor.fetchall()
     conn.close()
     return logs
+
+# Загрузка моделей роутеров
+def load_router_models():
+    if not os.path.exists(ROUTER_MODELS_FILE):
+        print(f"Файл {ROUTER_MODELS_FILE} не найден. Используются настройки по умолчанию.")
+        return {}
+    with open(ROUTER_MODELS_FILE, "r", encoding="utf-8") as file:
+        return json.load(file)
