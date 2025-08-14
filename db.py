@@ -86,6 +86,15 @@ def init_db():
     conn_routers.commit()
     conn_routers.close()
 
+def get_settings():
+    """Получение всех настроек из базы данных routers."""
+    conn = sqlite3.connect(ROUTERS_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('SELECT key, value FROM settings')
+    settings = {key: value for key, value in cursor.fetchall()}
+    conn.close()
+    return settings
+
 def validate_user_by_id(user_id):
     """Проверка пользователя в базе данных users по ID."""
     conn = sqlite3.connect(USERS_DB_NAME)
