@@ -348,7 +348,7 @@ def start_log_server(host='0.0.0.0', port=1514):  # Используем пор�
                     continue
 
                 logging.info(f"Received log from {client_ip}: {message}")
-                db.insert_log(client_ip, message)
+                db.insert_log(client_ip, message, client_ip)  # Передаем IP как device_id
             except Exception as e:
                 logging.error(f"Error while processing log: {e}")
 
