@@ -334,11 +334,6 @@ def settings():
         for key, value in request.form.items():
             db.update_setting(key, value)
 
-        # Проверяем, изменился ли веб-порт
-        new_port = int(db.get_settings().get('web_port', 5000))
-        if new_port != app.config.get('SERVER_PORT', 5000):
-            print(f"Web port changed to {new_port}. Restart the application to apply changes.")
-
     settings = db.get_settings()
     return render_template('settings.html', settings=settings)
 

@@ -94,12 +94,6 @@ def init_db():
             INSERT INTO settings (key, value) VALUES ('log_server_port', '1514')
         ''')
         print("Добавлена настройка log_server_port со значением 1514")
-    cursor_routers.execute('SELECT COUNT(*) FROM settings WHERE key = "web_port"')
-    if cursor_routers.fetchone()[0] == 0:
-        cursor_routers.execute('''
-            INSERT INTO settings (key, value) VALUES ('web_port', '5000')
-        ''')
-        print("Добавлена настройка web_port со значением 5000")
     conn_routers.commit()
     conn_routers.close()
 
