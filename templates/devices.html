@@ -14,14 +14,16 @@
             <thead>
                 <tr>
                     <th>IP</th>
+                    <th>Модель</th>
                     <th>Описание</th>
                 </tr>
             </thead>
             <tbody>
-                {% for device, description in devices %}
+                {% for device, details in devices %}
                 <tr>
                     <td><a href="{{ url_for('view_logs_by_device', device_id=device) }}">{{ device }}</a></td>
-                    <td>{{ description }}</td>
+                    <td>{{ details[0] }}</td> <!-- Модель устройства -->
+                    <td>{{ details[1] }}</td> <!-- Описание устройства -->
                 </tr>
                 {% endfor %}
             </tbody>

@@ -127,20 +127,21 @@ def view_devices():
     devices = cursor_logs.fetchall()
     conn_logs.close()
 
-    # Подключение к базе данных routers для получения описаний
+    # Подключение к базе данных routers для получения описаний и моделей
     conn_routers = sqlite3.connect(db.ROUTERS_DB_NAME)
     cursor_routers = conn_routers.cursor()
-    cursor_routers.execute('SELECT identifier, description FROM router_settings')
-    router_descriptions = {row[0]: row[1] for row in cursor_routers.fetchall()}
+    cursor_routers.execute('SELECT identifier, model, description FROM router_settings')
+    router_data = {row[0]: (row[1], row[2]) for row in cursor_routers.fetchall()}
     conn_routers.close()
 
     # Объединяем данные
-    devices_with_descriptions = [
-        (device[0], router_descriptions.get(device[0], "Описание отсутствует"))
+    devices_with_details = [
+        (device[0], router_data.get(device[0], ("Неизвестная модель", "Описание отсутствует")))
         for device in devices
     ]
 
-    return render_template('devices.html', devices=devices_with_descriptions)
+    return render_template('devices.html', devices=devices_with_details)
+
 @app.route('/logs/<device_id>', methods=['GET'])
 @login_required
 def view_logs_by_device(device_id):
