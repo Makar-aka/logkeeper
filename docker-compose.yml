@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: https://github.com/Makar-aka/logkeeper.git
+      dockerfile: Dockerfile
+    container_name: logkeeper_app
+    ports:
+      - "${WEB_PORT}:5000"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    restart: always

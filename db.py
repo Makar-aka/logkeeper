@@ -4,10 +4,10 @@ import json
 import hashlib  # Для хэширования паролей
 
 # Имена баз данных
-LOGS_DB_NAME = "logs.db"
-USERS_DB_NAME = "users.db"
-ROUTERS_DB_NAME = "routers.db"
-ROUTER_MODELS_FILE = "router_models.json"
+LOGS_DB_NAME = os.getenv("LOGS_DB_PATH", "data/logs.db")
+USERS_DB_NAME = os.getenv("USERS_DB_PATH", "data/users.db")
+ROUTERS_DB_NAME = os.getenv("ROUTERS_DB_PATH", "data/routers.db")
+ROUTER_MODELS_FILE = os.getenv("ROUTER_MODELS_FILE", "router_models.json")
 
 # Хэширование пароля
 def hash_password(password):
