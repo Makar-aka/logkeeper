@@ -279,6 +279,15 @@ def approve_ip():
 
     return redirect(url_for('manage_routers'))
 
+@app.route('/admin/delete_router/<identifier>', methods=['POST'])
+@login_required
+def delete_router(identifier):
+    if current_user.role != 'admin':
+        return 'Access denied', 403
+
+    db.delete_router_setting(identifier)  # Удаляем роутер из базы данных
+    return redirect(url_for('manage_routers'))
+
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():

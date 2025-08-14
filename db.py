@@ -240,3 +240,11 @@ def remove_pending_ip(ip):
     cursor.execute('DELETE FROM pending_ips WHERE ip = ?', (ip,))
     conn.commit()
     conn.close()
+
+def delete_router_setting(identifier):
+    """Удаление настройки роутера по идентификатору."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM router_settings WHERE identifier = ?', (identifier,))
+    conn.commit()
+    conn.close()
