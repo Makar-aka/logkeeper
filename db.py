@@ -99,7 +99,8 @@ def validate_user(username, password):
     """Проверка пользователя в базе данных users."""
     conn = sqlite3.connect(USERS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('SELECT id, username, role FROM users WHERE username = ? AND password = ?', (username, password))
+    hashed_password = hash_password(password)  # Хэшируем введенный пароль
+    cursor.execute('SELECT id, username, role FROM users WHERE username = ? AND password = ?', (username, hashed_password))
     user = cursor.fetchone()
     conn.close()
     return user
