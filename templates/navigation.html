@@ -7,6 +7,8 @@
     <a href="/admin/routers" style="color: white; text-decoration: none; margin: 0 15px;">Настройка роутеров</a>
     <a href="/settings" style="color: white; text-decoration: none; margin: 0 15px;">Настройки</a>
     {% endif %}
+    {% if current_user.role == 'user' %}
     <a href="/user/change_password" style="color: white; text-decoration: none; margin: 0 15px;">Сменить пароль</a>
+    {% endif %}
     <a href="/logout" style="color: white; text-decoration: none; margin: 0 15px;">Выйти</a>
 </nav>
