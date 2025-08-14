@@ -87,19 +87,26 @@ def manage_routers():
         return 'Access denied', 403
 
     if request.method == 'POST':
-        if 'pending_ip' in request.form:  # Если добавляется IP из ожидающих
-            pending_ip = request.form['pending_ip']
-            model = request.form['model']
-            db.add_allowed_ip(pending_ip)  # Добавляем IP в разрешенные
-            db.add_router_setting(pending_ip, model)  # Добавляем настройки роутера
-            db.remove_pending_ip(pending_ip)  # Удаляем IP из ожидающих
-        else:  # Если добавляется новый роутер вручную
-            device_id = request.form['device_id']
-            model = request.form['model']
-            description = request.form.get('description', '')
+        # Получаем данные из формы
+        pending_ip = request.form.get('pending_ip')
+        device_id = request.form.get('device_id')
+        model = request.form.get('model')
+        description = request.form.get('description', '')
+
+        # Если выбран IP из ожидающих, добавляем его в разрешенные
+        if pending_ip:
+            db.add_allowed_ip(pending_ip)
+            device_id = pending_ip  # Используем IP как идентификатор устройства
+
+        # Добавляем или обновляем настройки роутера
+        if device_id and model:
             db.add_router_setting(device_id, model, description)
 
-    # Загрузка моделей роутеров из файла
+        # Удаляем IP из списка ожидающих, если он был выбран
+        if pending_ip:
+            db.remove_pending_ip(pending_ip)
+
+    # Загрузка данных для отображения
     router_models = db.load_router_models()
     router_settings = db.get_router_settings()
     pending_ips = db.get_pending_ips()  # Получаем список ожидающих IP
