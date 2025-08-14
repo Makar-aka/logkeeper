@@ -120,13 +120,27 @@ def manage_routers():
 @app.route('/devices', methods=['GET'])
 @login_required
 def view_devices():
-    conn = sqlite3.connect(db.LOGS_DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute('SELECT DISTINCT device_id FROM logs ORDER BY device_id ASC')
-    devices = cursor.fetchall()
-    conn.close()
-    return render_template('devices.html', devices=devices)
+    # Подключение к базе данных logs
+    conn_logs = sqlite3.connect(db.LOGS_DB_NAME)
+    cursor_logs = conn_logs.cursor()
+    cursor_logs.execute('SELECT DISTINCT device_id FROM logs ORDER BY device_id ASC')
+    devices = cursor_logs.fetchall()
+    conn_logs.close()
 
+    # Подключение к базе данных routers для получения описаний
+    conn_routers = sqlite3.connect(db.ROUTERS_DB_NAME)
+    cursor_routers = conn_routers.cursor()
+    cursor_routers.execute('SELECT identifier, description FROM router_settings')
+    router_descriptions = {row[0]: row[1] for row in cursor_routers.fetchall()}
+    conn_routers.close()
+
+    # Объединяем данные
+    devices_with_descriptions = [
+        (device[0], router_descriptions.get(device[0], "Описание отсутствует"))
+        for device in devices
+    ]
+
+    return render_template('devices.html', devices=devices_with_descriptions)
 @app.route('/logs/<device_id>', methods=['GET'])
 @login_required
 def view_logs_by_device(device_id):

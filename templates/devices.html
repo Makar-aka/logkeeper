@@ -3,23 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Устройства</title>
+    <title>Список устройств</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     {% include 'navigation.html' %}
     <div class="container">
         <h1>Список устройств</h1>
-        <ul class="device-list">
-            {% for device in devices %}
-            <li>
-                <a href="{{ url_for('view_logs_by_device', device_id=device[0]) }}">{{ device[0] }}</a>
-            </li>
-            {% endfor %}
-        </ul>
+        <table class="logs-table">
+            <thead>
+                <tr>
+                    <th>IP</th>
+                    <th>Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device, description in devices %}
+                <tr>
+                    <td><a href="{{ url_for('view_logs_by_device', device_id=device) }}">{{ device }}</a></td>
+                    <td>{{ description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <footer>
-        © <a href="https://github.com/Makar-aka" target="_blank">MakarSPB</a>
-    </footer>
 </body>
 </html>
