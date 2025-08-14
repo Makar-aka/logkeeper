@@ -44,10 +44,19 @@
                     <td>{{ user[1] }}</td>
                     <td>{{ user[2] }}</td>
                     <td>
+                        <!-- Форма для изменения пароля -->
                         <form method="POST" style="display: inline;">
                             <input type="hidden" name="user_id" value="{{ user[0] }}">
                             <input type="password" name="new_password" placeholder="Новый пароль" required>
                             <button type="submit">Сменить</button>
+                        </form>
+                    </td>
+                    <td>
+                        <!-- Кнопка удаления -->
+                        <form method="POST" action="{{ url_for('delete_user', user_id=user[0]) }}" style="display: inline;">
+                            <button type="submit" style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                                Удалить
+                            </button>
                         </form>
                     </td>
                 </tr>

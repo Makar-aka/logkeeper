@@ -227,6 +227,22 @@ def change_password():
 
     return render_template('change_password.html')
 
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if current_user.role != 'admin':
+        return 'Access denied', 403
+
+    conn = sqlite3.connect(db.USERS_DB_NAME)
+    cursor = conn.cursor()
+
+    # Удаляем пользователя по ID
+    cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('manage_users'))
+
 @app.route('/statistics', methods=['GET'])
 @login_required
 def view_statistics():
