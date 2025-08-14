@@ -208,33 +208,17 @@ def load_router_models():
     with open(ROUTER_MODELS_FILE, "r", encoding="utf-8") as file:
         return json.load(file)
 
+# Удаляем эту функцию, если она больше не нужна
 def parse_log_message(log_message, model=None):
     """Парсер логов с поддержкой моделей."""
-    router_models = load_router_models()
-    model_settings = router_models.get(model, {})
-    log_format = model_settings.get("log_format")
-    prefix_as_device_id = model_settings.get("prefix_as_device_id", False)
+    # Логика парсинга больше не нужна
+    pass
 
-    try:
-        match = re.match(log_format, log_message)
-        if match:
-            if prefix_as_device_id:
-                timestamp, prefix, message = match.groups()
-                device_id = prefix
-            else:
-                timestamp, device_id, message = match.groups()
-            return timestamp, device_id, message
-        else:
-            return None, "Unknown", log_message
-    except Exception:
-        return None, "Unknown", log_message
-
-def insert_log(ip, log, model=None):
+def insert_log(ip, log, device_id):
     """Добавление лога в базу данных logs."""
-    timestamp, device_id, message = parse_log_message(log, model)  # Парсим лог
     conn = sqlite3.connect(LOGS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO logs (ip, log, device_id, timestamp) VALUES (?, ?, ?, ?)', (ip, message, device_id, timestamp))
+    cursor.execute('INSERT INTO logs (ip, log, device_id, timestamp) VALUES (?, ?, ?, datetime("now"))', (ip, log, device_id))
     conn.commit()
     conn.close()
 
