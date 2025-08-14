@@ -22,10 +22,6 @@
                 {% endfor %}
             </select>
 
-            <!-- Поле для идентификатора устройства -->
-            <label for="device_id">Идентификатор устройства:</label>
-            <input type="text" id="device_id" name="device_id" placeholder="Введите идентификатор устройства">
-
             <!-- Выпадающее меню для выбора модели роутера -->
             <label for="model">Модель роутера:</label>
             <select id="model" name="model" required>
@@ -38,6 +34,11 @@
             <!-- Поле для описания -->
             <label for="description">Описание:</label>
             <input type="text" id="description" name="description" placeholder="Введите описание">
+
+            <!-- Поле для идентификатора устройства -->
+            <label for="device_id">Идентификатор устройства:</label>
+            <input type="text" id="device_id" name="device_id" placeholder="Если нет ожидающих - введите идентификатор устройства">
+
 
             <!-- Кнопка отправки -->
             <button type="submit">Добавить/Обновить</button>
