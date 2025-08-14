@@ -188,28 +188,21 @@ def manage_users():
     if current_user.role != 'admin':
         return 'Access denied', 403
 
-    conn = sqlite3.connect(db.USERS_DB_NAME)  # Подключаемся к users.db
+    conn = sqlite3.connect(db.USERS_DB_NAME)
     cursor = conn.cursor()
 
     if request.method == 'POST':
-        # Проверяем, что это запрос на изменение пароля
-        if 'user_id' in request.form and 'new_password' in request.form:
-            user_id = request.form.get('user_id')
-            new_password = request.form.get('new_password')
-            if user_id and new_password:
-                cursor.execute('UPDATE users SET password = ? WHERE id = ?', (new_password, user_id))
+        # Добавление нового пользователя
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role = request.form.get('role')
+        if username and password and role:
+            try:
+                hashed_password = db.hash_password(password)  # Хэшируем пароль
+                cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, hashed_password, role))
                 conn.commit()
-        else:
-            # Добавление нового пользователя
-            username = request.form.get('username')
-            password = request.form.get('password')
-            role = request.form.get('role')
-            if username and password and role:
-                try:
-                    cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
-                    conn.commit()
-                except sqlite3.IntegrityError:
-                    return 'Пользователь с таким именем уже существует', 400
+            except sqlite3.IntegrityError:
+                return 'Пользователь с таким именем уже существует', 400
 
     # Получение списка пользователей
     cursor.execute('SELECT id, username, role FROM users ORDER BY id ASC')
