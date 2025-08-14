@@ -236,10 +236,15 @@ def delete_user(user_id):
     conn = sqlite3.connect(db.USERS_DB_NAME)
     cursor = conn.cursor()
 
-    # Удаляем пользователя по ID
-    cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
-    conn.commit()
-    conn.close()
+    try:
+        # Удаляем пользователя по ID
+        cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
+        conn.commit()
+    except sqlite3.OperationalError as e:
+        logging.error(f"Error while deleting user: {e}")
+        return 'Database is locked', 500
+    finally:
+        conn.close()  # Убедитесь, что соединение закрывается
 
     return redirect(url_for('manage_users'))
 
