@@ -242,9 +242,19 @@ def remove_pending_ip(ip):
     conn.close()
 
 def delete_router_setting(identifier):
-    """Удаление настройки роутера по идентификатору."""
+    """Удаление настройки роутера по идентификатору и добавление его IP в список ожидающих."""
     conn = sqlite3.connect(LOGKEEPER_DB_NAME)
     cursor = conn.cursor()
+
+    # Получаем IP роутера перед удалением
+    cursor.execute('SELECT identifier FROM router_settings WHERE identifier = ?', (identifier,))
+    result = cursor.fetchone()
+    if result:
+        ip = result[0]
+        # Добавляем IP в список ожидающих
+        add_pending_ip(ip)
+
+    # Удаляем роутер из настроек
     cursor.execute('DELETE FROM router_settings WHERE identifier = ?', (identifier,))
     conn.commit()
     conn.close()
