@@ -10,23 +10,46 @@
     {% include 'navigation.html' %}
     <div class="container">
         <h1>Настройки роутеров</h1>
+
+        <!-- Форма добавления нового устройства -->
         <form method="POST">
             <label for="device_id">Идентификатор устройства (device_id):</label>
             <input type="text" id="device_id" name="device_id" required>
-            
+
             <label for="model">Модель роутера:</label>
             <select id="model" name="model" required>
                 {% for model, details in router_models.items() %}
                 <option value="{{ model }}">{{ model }} - {{ details.description }}</option>
                 {% endfor %}
             </select>
-            
+
             <label for="description">Описание:</label>
             <input type="text" id="description" name="description">
-            
+
             <button type="submit">Добавить/Обновить</button>
         </form>
-        
+
+        <!-- Форма добавления IP из ожидающих -->
+        <h2>Добавить IP из ожидающих</h2>
+        <form method="POST" action="{{ url_for('approve_ip') }}">
+            <label for="pending_ip">Выберите IP:</label>
+            <select id="pending_ip" name="pending_ip" required>
+                {% for ip in pending_ips %}
+                <option value="{{ ip }}">{{ ip }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="model">Модель роутера:</label>
+            <select id="model" name="model" required>
+                {% for model, details in router_models.items() %}
+                <option value="{{ model }}">{{ model }} - {{ details.description }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Добавить</button>
+        </form>
+
+        <!-- Список настроек -->
         <h2>Список настроек</h2>
         <table class="logs-table">
             <thead>

@@ -54,6 +54,20 @@ def init_db():
             description TEXT
         )
     ''')
+    # Таблица для разрешенных IP
+    cursor_keeper.execute('''
+        CREATE TABLE IF NOT EXISTS allowed_ips (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip TEXT UNIQUE NOT NULL
+        )
+    ''')
+    # Таблица для ожидающих IP
+    cursor_keeper.execute('''
+        CREATE TABLE IF NOT EXISTS pending_ips (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip TEXT UNIQUE NOT NULL
+        )
+    ''')
     conn_keeper.commit()
     conn_keeper.close()
 
@@ -184,3 +198,45 @@ def get_router_model_by_identifier(identifier):
     result = cursor.fetchone()
     conn.close()
     return result[0] if result else None
+
+def is_ip_allowed(ip):
+    """Проверяет, разрешен ли IP."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('SELECT 1 FROM allowed_ips WHERE ip = ?', (ip,))
+    result = cursor.fetchone()
+    conn.close()
+    return result is not None
+
+def add_allowed_ip(ip):
+    """Добавляет IP в список разрешенных."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('INSERT OR IGNORE INTO allowed_ips (ip) VALUES (?)', (ip,))
+    conn.commit()
+    conn.close()
+
+def add_pending_ip(ip):
+    """Добавляет IP в список ожидающих."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('INSERT OR IGNORE INTO pending_ips (ip) VALUES (?)', (ip,))
+    conn.commit()
+    conn.close()
+
+def get_pending_ips():
+    """Возвращает список ожидающих IP."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('SELECT ip FROM pending_ips')
+    ips = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return ips
+
+def remove_pending_ip(ip):
+    """Удаляет IP из списка ожидающих."""
+    conn = sqlite3.connect(LOGKEEPER_DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM pending_ips WHERE ip = ?', (ip,))
+    conn.commit()
+    conn.close()

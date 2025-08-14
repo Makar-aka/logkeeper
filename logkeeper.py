@@ -87,15 +87,28 @@ def manage_routers():
         return 'Access denied', 403
 
     if request.method == 'POST':
-        device_id = request.form['device_id']
-        model = request.form['model']
-        description = request.form.get('description', '')
-        db.add_router_setting(device_id, model, description)
+        if 'pending_ip' in request.form:  # Если добавляется IP из ожидающих
+            pending_ip = request.form['pending_ip']
+            model = request.form['model']
+            db.add_allowed_ip(pending_ip)  # Добавляем IP в разрешенные
+            db.add_router_setting(pending_ip, model)  # Добавляем настройки роутера
+            db.remove_pending_ip(pending_ip)  # Удаляем IP из ожидающих
+        else:  # Если добавляется новый роутер вручную
+            device_id = request.form['device_id']
+            model = request.form['model']
+            description = request.form.get('description', '')
+            db.add_router_setting(device_id, model, description)
 
     # Загрузка моделей роутеров из файла
     router_models = db.load_router_models()
     router_settings = db.get_router_settings()
-    return render_template('routers.html', router_settings=router_settings, router_models=router_models)
+    pending_ips = db.get_pending_ips()  # Получаем список ожидающих IP
+    return render_template(
+        'routers.html',
+        router_settings=router_settings,
+        router_models=router_models,
+        pending_ips=pending_ips
+    )
 
 @app.route('/devices', methods=['GET'])
 @login_required
@@ -276,8 +289,16 @@ def start_log_server(host='0.0.0.0', port=1514):  # Используем пор�
             try:
                 data, addr = sock.recvfrom(1024)
                 message = data.decode('utf-8')
-                logging.info(f"Received log from {addr[0]}: {message}")
-                db.insert_log(addr[0], message)
+                client_ip = addr[0]
+
+                # Проверяем, разрешен ли IP
+                if not db.is_ip_allowed(client_ip):
+                    logging.info(f"Received log from unapproved IP {client_ip}: {message}")
+                    db.add_pending_ip(client_ip)  # Добавляем IP в список ожидающих одобрения
+                    continue
+
+                logging.info(f"Received log from {client_ip}: {message}")
+                db.insert_log(client_ip, message)
             except Exception as e:
                 logging.error(f"Error while processing log: {e}")
 
