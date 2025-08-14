@@ -188,7 +188,7 @@ def manage_users():
     if current_user.role != 'admin':
         return 'Access denied', 403
 
-    conn = sqlite3.connect(db.LOGKEEPER_DB_NAME)
+    conn = sqlite3.connect(db.USERS_DB_NAME)  # Подключаемся к users.db
     cursor = conn.cursor()
 
     if request.method == 'POST':
