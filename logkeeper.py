@@ -69,7 +69,7 @@ def home():
 @login_required
 def admin_panel():
     if current_user.role != 'admin':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
     return render_template('admin.html')
 
 # Маршрут для пользовательской панели
@@ -77,14 +77,14 @@ def admin_panel():
 @login_required
 def user_panel():
     if current_user.role != 'user':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
     return render_template('user.html')
 
 @app.route('/admin/routers', methods=['GET', 'POST'])
 @login_required
 def manage_routers():
     if current_user.role != 'admin':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
 
     if request.method == 'POST':
         # Получаем данные из формы
@@ -186,7 +186,7 @@ def view_logs():
 @login_required
 def manage_users():
     if current_user.role != 'admin':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
 
     conn = sqlite3.connect(db.USERS_DB_NAME)
     cursor = conn.cursor()
@@ -215,15 +215,15 @@ def manage_users():
 @login_required
 def change_password():
     if current_user.role != 'admin':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
 
     if request.method == 'POST':
         new_password = request.form['new_password']
         if not new_password:
-            return 'Password cannot be empty', 400
+            return 'Пароль не может быть пустым', 400
 
         db.update_user_password('admin', new_password)
-        return 'Password updated successfully', 200
+        return 'Пароль обновлён', 200
 
     return render_template('change_password.html')
 
@@ -231,7 +231,7 @@ def change_password():
 @login_required
 def delete_user(user_id):
     if current_user.role != 'admin':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
 
     conn = sqlite3.connect(db.USERS_DB_NAME)
     cursor = conn.cursor()
@@ -297,7 +297,7 @@ def view_statistics():
 @login_required
 def approve_ip():
     if current_user.role != 'admin':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
 
     pending_ip = request.form.get('pending_ip')
     model = request.form.get('model')
@@ -318,7 +318,7 @@ def approve_ip():
 @login_required
 def delete_router(identifier):
     if current_user.role != 'admin':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
 
     db.delete_router_setting(identifier)  # Удаляем роутер из базы данных
     return redirect(url_for('manage_routers'))
@@ -327,7 +327,7 @@ def delete_router(identifier):
 @login_required
 def settings():
     if current_user.role != 'admin':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
 
     if request.method == 'POST':
         old_port = int(db.get_settings().get('log_server_port', 1514))
@@ -347,7 +347,7 @@ def settings():
 @login_required
 def user_change_password():
     if current_user.role != 'user':
-        return 'Access denied', 403
+        return 'Нет доступа', 403
 
     if request.method == 'POST':
         new_password = request.form['new_password']
