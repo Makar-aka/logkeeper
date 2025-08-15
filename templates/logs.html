@@ -38,6 +38,7 @@
             <tbody>
                 {% for log in logs %}
                 <tr>
+                    <td>{{ format_time(log[4], settings.get('timezone', 'UTC')) }}</td>                    
                     <td>{{ log[1] }}</td> <!-- IP -->
                     <td>{{ log[2] }}</td> <!-- Лог -->
                 </tr>
