@@ -11,6 +11,6 @@ services:
       - ./data:/app/data
     env_file:
       - .env
--   environment:
+    environment:
       - TZ=${TZ}
     restart: always
