@@ -305,3 +305,54 @@ form {
         .page-container button:hover {
             background-color: #0056b3;
         }
+
+/* Стили для мобильных устройств */
+@media (max-width: 768px) {
+    /* Универсальный контейнер */
+    .page-container {
+        width: 90%; /* Уменьшаем ширину контейнера */
+        padding: 15px; /* Уменьшаем отступы */
+    }
+
+        .page-container h1 {
+            font-size: 20px; /* Уменьшаем размер заголовка */
+        }
+
+        .page-container input,
+        .page-container button {
+            font-size: 14px; /* Уменьшаем размер текста */
+            padding: 8px; /* Уменьшаем внутренние отступы */
+        }
+
+    /* Таблицы */
+    .logs-table {
+        font-size: 14px; /* Уменьшаем размер текста в таблицах */
+        width: 100%; /* Таблица занимает всю ширину экрана */
+    }
+
+        .logs-table th,
+        .logs-table td {
+            padding: 8px; /* Уменьшаем отступы в ячейках */
+        }
+
+    /* Кнопки */
+    .back-button,
+    .pagination a {
+        font-size: 14px; /* Уменьшаем размер текста */
+        padding: 8px 10px; /* Уменьшаем внутренние отступы */
+    }
+
+    /* Навигация */
+    nav {
+        font-size: 14px; /* Уменьшаем размер текста в навигации */
+    }
+
+        nav a {
+            margin: 0 10px; /* Уменьшаем отступы между ссылками */
+        }
+
+    /* Футер */
+    footer {
+        font-size: 12px; /* Уменьшаем размер текста в футере */
+    }
+}
