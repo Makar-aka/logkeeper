@@ -2,6 +2,8 @@ import os
 import sqlite3
 import json
 import hashlib  # Для хэширования паролей
+from datetime import datetime
+import pytz
 
 # Имена баз данных
 LOGS_DB_NAME = os.getenv("LOGS_DB_PATH", "data/logs.db")
@@ -216,9 +218,15 @@ def remove_pending_ip(ip):
 
 # Работа с логами
 def insert_log(ip, log, device_id):
+    """Добавление лога в базу данных logs с учетом локального времени."""
+    settings = get_settings()
+    timezone = settings.get('timezone', 'UTC')  # Получаем часовой пояс из настроек
+    tz = pytz.timezone(timezone)
+    local_time = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')  # Локальное время
+
     conn = sqlite3.connect(LOGS_DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO logs (ip, log, device_id, timestamp) VALUES (?, ?, ?, datetime("now"))', (ip, log, device_id))
+    cursor.execute('INSERT INTO logs (ip, log, device_id, timestamp) VALUES (?, ?, ?, ?)', (ip, log, device_id, local_time))
     conn.commit()
     conn.close()
 
